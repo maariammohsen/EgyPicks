@@ -2,3 +2,4 @@
 /public
 /controllers/tourController.js
 /dev-data
+/routes/tourRoutes.js
