@@ -1,6 +1,5 @@
 const express = require('express');
 const morgan = require('morgan');
-const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
 const app = express();
@@ -21,18 +20,7 @@ app.use((req, res, next) => {
   next(); //NEVERRR FORGETT T OOO USEEE NEXTT IN OUR MIDDLEWARE!!!!!
 });
 
-///route handlers
-
-// app.get('/api/v1/tours' , getAllTours); //api to request all tours & it's consumed response
-// app.get('/api/v1/tours/:id' , getTour);
-// app.post('/api/v1/tours' , createTour);
-// app.delete('/api/v1/tours/:id' , deleteTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-
 ///routes
-
-app.use('/api/v1/tours', tourRouter);
-
 app.use('/api/v1/users', userRouter);
 ///starting the server
 module.exports = app;
