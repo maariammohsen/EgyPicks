@@ -7,7 +7,8 @@ class apifeatures {
     const execludedQueries = ['sort', 'page', 'limitField', 'limit'];
     const filteredQueries = { ...this.querystr };
     execludedQueries.forEach((ele) => delete filteredQueries[ele]);
-    const stringQuery = JSON.stringify(filteredQueries);
+    console.log(filteredQueries);
+    let stringQuery = JSON.stringify(filteredQueries);
     stringQuery = stringQuery.replace(
       /\b(lt|lte|gt|gte)\b/g,
       (val) => `$${val}`
@@ -37,3 +38,5 @@ class apifeatures {
     return this;
   }
 }
+
+module.exports = apifeatures;
