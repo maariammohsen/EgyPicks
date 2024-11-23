@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const userRouter = require('./routes/userRoutes');
+const productRouter = require('./routes/productRoutes');
 
 const app = express();
 ///middlewares
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 ///routes
+app.use('/api/v1/products', productRouter);
 app.use('/api/v1/users', userRouter);
 ///starting the server
 module.exports = app;
