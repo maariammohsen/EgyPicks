@@ -18,6 +18,7 @@ exports.getAllUsers = async (req, res) => {
 exports.getUser = async (req, res) => {
   try {
     const userLazeez = await User.findById(req.params.id);
+    console.log(userLazeez);
     if (!userLazeez) {
       throw 'user not found!'; //throwing error
     }
