@@ -18,14 +18,14 @@ class apifeatures {
   }
   sort() {
     if (this.querystr.sort) {
-      const sortedQuery = this.querystr.sort.split(',').join(' ');
+      const sortedQuery = this.querystr.sort.split(',').join(' ').trim();
       this.query = this.query.sort(sortedQuery);
     }
     return this;
   }
   limitField() {
     if (this.querystr.limitField) {
-      const limitedQuery = this.querystr.limitField.split(',').join(' ');
+      const limitedQuery = this.querystr.limitField.split(',').join(' ').trim();
       this.query = this.query.select(limitedQuery);
     }
     return this;
