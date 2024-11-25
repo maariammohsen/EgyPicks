@@ -98,3 +98,41 @@ exports.deleteProduct = async (req, res) => {
     });
   }
 };
+
+exports.getProductStats = async (req, res) => {
+  try {
+    const stats = await Product.aggregate([
+      { $match: { Sales: { $gte: 5 } } },
+      {
+        $group: {
+          _id: '$category',
+          numProducts: { $sum: 1 },
+          numSales: { $sum: '$Sales' },
+          avgSales: { $avg: '$Sales' },
+          avgPrice: { $avg: '$Price' },
+          minPrice: { $min: '$Price' },
+          maxPrice: { $max: '$Price' },
+        },
+      },
+      {
+        $sort: { avgPrice: 1 }, //1 asc , -1 desc
+      },
+      // {
+      //   $match: {
+      //     _id: { $ne: 'Beauty' }, //not equal
+      //   },
+      // },
+    ]);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};

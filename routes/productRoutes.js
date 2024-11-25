@@ -9,6 +9,8 @@ router
   .get(productController.getAllProducts)
   .post(productController.createProduct);
 
+router.route('/product-stats').get(productController.getProductStats);
+
 router
   .route('/:id')
   .get(productController.getProduct)
@@ -16,4 +18,3 @@ router
   .delete(productController.deleteProduct);
 
 module.exports = router;
-
