@@ -12,6 +12,7 @@ const app = express();
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
 app.use(express.json()); //building middleware function used to parse data
 app.use(express.static(`${__dirname}/images`));
 
@@ -22,6 +23,5 @@ app.use('/api/v1/users', userRouter);
 app.all('*', (req, res, next) => {
   next(new appError(`can't find ${req.originalUrl} on this server!`, 404));
 });
-
 app.use(globalErrorHandler);
 module.exports = app;
