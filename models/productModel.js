@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -24,7 +25,7 @@ const productSchema = new mongoose.Schema({
     required: [true, 'A product must belong to a brand'],
   },
 
-  price: {
+  Price: {
     type: Number,
     required: [true, 'A product must have a price'],
   },
@@ -38,6 +39,10 @@ const productSchema = new mongoose.Schema({
 
   title: String,
 
+  Sales: {
+    type: Number,
+  },
+  slug: String,
   // review: {
   //   type: mongoose.schema.objectId,
   //   ref: 'review',
@@ -47,6 +52,24 @@ const productSchema = new mongoose.Schema({
   //   type: mongoose.schema.objectId,
   //   ref: 'order',
   // },
+});
+
+productSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  //this will point to the current document
+  next();
+});
+
+productSchema.pre(/^find/, function (next) {
+  this.find({ show: { $ne: false } });
+  //this will point to the current query
+  // this.start = Date.now();
+  next();
+});
+
+productSchema.post(/^find/, function (docs, next) {
+  // console.log(`Query took ${Date.now() - this.start} milliseconds`);
+  next();
 });
 
 const Product = mongoose.model('Product', productSchema);
