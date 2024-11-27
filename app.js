@@ -3,6 +3,7 @@ const morgan = require('morgan');
 
 const appError = require('./util/appError');
 const globalErrorHandler = require('./controllers/errorController');
+
 const userRouter = require('./routes/userRoutes');
 const productRouter = require('./routes/productRoutes');
 
@@ -14,6 +15,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json()); //building middleware function used to parse data
+
 app.use(express.static(`${__dirname}/images`));
 
 ///routes
@@ -24,4 +26,7 @@ app.all('*', (req, res, next) => {
   next(new appError(`can't find ${req.originalUrl} on this server!`, 404));
 });
 app.use(globalErrorHandler);
+
+///starting the server
+
 module.exports = app;

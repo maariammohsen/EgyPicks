@@ -21,7 +21,7 @@ const productSchema = new mongoose.Schema({
 
   brandName: {
     type: String,
-    // enum: [],
+    // enum: ['basiclook', 'town team', 'lilly', 'Bou', 'azor', 'Janelle', 'favelin', 'nuit'],
     required: [true, 'A product must belong to a brand'],
   },
 
@@ -32,18 +32,10 @@ const productSchema = new mongoose.Schema({
 
   show: {
     type: Boolean,
-    default: [
-      true,
-      'if (yes) show the product, if (no) do not show the product',
-    ],
+    default: true,
   },
 
-  image: {
-    type: String,
-    required: [true, 'A product must have an image'],
-  },
-
-  images: [String],
+  photo: String,
 
   title: String,
 
