@@ -1,3 +1,22 @@
+const appError = require('../util/appError');
+
+const CastErrorHandler = (err) => {
+  const message = `invalid ${err.path}:${err.value}`;
+  return new appError(message, 400);
+};
+const DuplicateFieldHandler = (err) => {
+  const message = `Duplicate field value: ${JSON.stringify(err.keyValue)
+    .split(':')[1]
+    .slice(1, -2)}. please use another value`;
+  return new appError(message, 400);
+};
+
+const ValidatorErrorHandler = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const message = `Invalid input data. ${errors.join('.')}`;
+  return new appError(message, 400);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -28,6 +47,10 @@ module.exports = (err, req, res, next) => {
   if ((process.env.NODE_ENV = 'development')) {
     sendErrorDev(err, res);
   } else if ((process.env.NODE_ENV = 'production')) {
-    sendErrorProduction(err, res);
+    let error = { ...err };
+    if (err.name === 'CastError') error = CastErrorHandler(error);
+    if (err.code === 11000) error = DuplicateFieldHandler(error);
+    if (err.name === 'ValidationError') error = ValidatorErrorHandler(error);
+    sendErrorProduction(error, res);
   }
 };
