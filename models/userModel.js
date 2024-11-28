@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const userSchema = new mongoose.Schema({
+const bcrypt = require('bcrypt');
+const user = new mongoose.Schema({
   role: {
     type: String,
     enum: ['admin', 'user'],
@@ -44,6 +45,16 @@ const userSchema = new mongoose.Schema({
     required: [true, 'required! user must insert an invalid email'],
     validate: [validator.isEmail, 'the email is invalid!'],
   },
+  passwordValidate: {
+    type: String,
+    required: [true, 'required! user must insert a strong password'],
+    validate: {
+      validator: function (ele) {
+        return ele === this.password;
+      },
+      message: 'Password are not correct!',
+    },
+  },
   password: {
     type: String,
     required: [true, 'required! user must insert a strong password'],
@@ -54,5 +65,12 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const userModel = mongoose.model('User', userSchema);
+user.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+
+  this.password = await bcrypt.hash(this.password, 12);
+  this.passwordValidate = undefined;
+  next();
+});
+const userModel = mongoose.model('User', user);
 module.exports = userModel;
