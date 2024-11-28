@@ -50,7 +50,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
-  const userman = await user.findOne({ email: req.body.email });
+  const userman = await User.findOne({ email: req.body.email });
   if (!userman)
     return next(new appError('there is no user with that email', 404));
 
@@ -79,7 +79,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  const userfresh = await user.findOne({
+  const userfresh = await User.findOne({
     resetToken: req.params.token,
     resetTokenTimer: { $gte: Date.now() },
   });
