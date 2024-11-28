@@ -9,6 +9,24 @@ const signedToken = (id) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
+
+const cookiesAndTokens = (user, res, statusCode) => {
+  const token = signedToken(user._id);
+  const cookiesOptions = {
+    httpOnly: true,
+    secure: false,
+    expires: new Date(Date.now() + 90 * 1000 * 60 * 60 * 24), //milliseconds to days
+  };
+  user.password = undefined;
+  res.cookie('JWT', token, cookiesOptions);
+  res.status(statusCode).json({
+    status: 'success',
+    data: {
+      userData,
+    },
+  });
+};
+
 exports.signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -23,13 +41,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
   const token = signedToken(newUser._id);
   await new email(newUser).send('test', 'welcome to EgyPicks!');
 
-  res.status(201).json({
-    status: 'success!',
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  cookiesAndTokens(newUser, res, 201);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -42,7 +54,6 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new appError('OOPS! Incorrect Email or Password', 401));
   }
-  const token = signedToken(user._id);
   res.status(200).json({
     status: 'success',
     token,
