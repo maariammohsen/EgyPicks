@@ -58,6 +58,7 @@ const user = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'required! user must insert a strong password'],
+    select: false, //hidden output
   },
   address: {
     type: String,
@@ -72,5 +73,10 @@ user.pre('save', async function (next) {
   this.passwordValidate = undefined;
   next();
 });
+
+user.methods.correctPassword = async function (candidatePass, userPass) {
+  return await bcrypt.compare(candidatePass, userPass);
+};
+
 const userModel = mongoose.model('User', user);
 module.exports = userModel;

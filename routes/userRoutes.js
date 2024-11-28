@@ -9,6 +9,7 @@ router
   .post(userController.createUser);
 
 router.post('/sign-up', authController.signUp);
+router.post('/log-in', authController.login);
 
 router
   .route('/:id')
