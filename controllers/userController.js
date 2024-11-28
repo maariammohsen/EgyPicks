@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const appError = require('../util/appError');
 const catchAsync = require('../util/catchAsync');
+const Email = require('../util/email');
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const usersMohtarama = await User.find();
@@ -26,6 +27,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
 exports.createUser = catchAsync(async (req, res, next) => {
   //it creates a new user from the request body that the user has inserted his information inside it
   const userMohtaram = await User.create(req.body);
+  await new Email(userMohtaram).send('test', 'love letter');
   res.status(200).json({
     status: 'Success!',
     data: userMohtaram,
