@@ -9,7 +9,11 @@ router
   .post(userController.createUser);
 
 router.post('/sign-up', authController.signUp);
+
 router.post('/log-in', authController.login);
+
+router.post('/forgotPassword', authController.forgotPassword);
+router.post('/resetPassword/:token', authController.resetPassword);
 
 router
   .route('/:id')

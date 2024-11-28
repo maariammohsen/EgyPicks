@@ -258,7 +258,7 @@ const style = `<style>
   }
 </style>`;
 
-const generateEmailWelcome = (content) => {
+const generatebaseEmail = (content) => {
   return `<!DOCTYPE html>
 <html>
   <head>
@@ -284,25 +284,7 @@ const generateEmailWelcome = (content) => {
                         <tbody>
                           <tr>
                             <td>
-                              <p>Hi ${content.firstName},</p>
-<p>Welcome to EgyPicks, we're glad to have you 🎉🙏</p>
-<table class="btn btn-primary" role="presentation" border="0" cellpadding="0" cellspacing="0">
-  <tbody>
-    <tr>
-      <td align="left">
-        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
-          <tbody>
-            <tr>
-              <td><a href="${content.url}" target="_blank">Upload user photo</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </td>
-    </tr>
-  </tbody>
-</table>
-<p>If you need any help with Shopping your next order, please don't hesitate to contact me!</p>
-<p>- Mariam Mohsen, CEO</p>
+                             ${content}
                             </td>
                           </tr>
                         </tbody>
@@ -330,4 +312,46 @@ const generateEmailWelcome = (content) => {
 </html>`;
 };
 
-module.exports = generateEmailWelcome;
+exports.welcomeEmailTemplate = (content) => {
+  return generateWelcomeEmail(` <p>Hi ${content.firstName},</p>
+<p>Welcome to EgyPicks, we're glad to have you 🎉🙏</p>
+<table class="btn btn-primary" role="presentation" border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td><a href="${content.url}" target="_blank">Upload user photo</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>If you need any help with Shopping your next order, please don't hesitate to contact me!</p>
+<p>- Mariam Mohsen, CEO</p>`);
+};
+
+exports.resetEmailTemplate = (content) => {
+  return generatebaseEmail(`<p>Hi ${content.firstName},</p>
+<p>Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${content.url}.</p>
+<p>(Website for this action not yet implememnted.)</p>
+<table class="btn btn-primary" role="presentation" border="0" cellpadding="0" cellspacing="0">
+  <tbody>
+    <tr>
+      <td align="left">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+          <tbody>
+            <tr>
+              <td><a href="${content.url}" target="_blank">Reset your password</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>If you didn't forget your password, please ignore this email!</p>`);
+};

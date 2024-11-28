@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const user = new mongoose.Schema({
   role: {
     type: String,
@@ -60,6 +61,8 @@ const user = new mongoose.Schema({
     required: [true, 'required! user must insert a strong password'],
     select: false, //hidden output
   },
+  resetToken: String,
+  resetTokenTimer: Date,
   address: {
     type: String,
     required: [true, 'required! user must insert addresss!'],
@@ -76,6 +79,16 @@ user.pre('save', async function (next) {
 
 user.methods.correctPassword = async function (candidatePass, userPass) {
   return await bcrypt.compare(candidatePass, userPass);
+};
+
+user.methods.createResetToken = function () {
+  const resettoken = crypto.randomBytes(32).toString('hex');
+  this.resetToken = crypto
+    .createHash('sha256')
+    .update(resettoken)
+    .digest('hex');
+  this.resetTokenTimer = Date.now() + 10 * 60 * 1000;
+  return this.resetToken;
 };
 
 const userModel = mongoose.model('User', user);

@@ -1,5 +1,5 @@
 const nodeMailer = require('nodemailer');
-const generateEmailContent = require('./emailTemplates');
+const emailTemplates = require('./emailTemplates');
 const htmltotext = require('html-to-text');
 class Email {
   constructor(user, url) {
@@ -21,16 +21,27 @@ class Email {
   }
 
   async send(template, subject) {
-    const html = generateEmailContent({ firstName: this.firstName });
-
     const mailOptions = {
       from: process.env.EMAIL_USERNAME,
       to: this.to,
       subject,
-      html,
-      text: htmltotext.convert(html),
+      html: template,
+      text: htmltotext.convert(template),
     };
     await this.newTransporter().sendMail(mailOptions);
+  }
+  async welcomeMail(subject) {
+    const html = emailTemplates.welcomeEmailTemplate({
+      firstName: this.firstName,
+    });
+    await this.send(html, subject);
+  }
+  async resetMail(subject) {
+    const html = emailTemplates.resetEmailTemplate({
+      firstName: this.firstName,
+      url: this.url,
+    });
+    await this.send(html, subject);
   }
 }
 

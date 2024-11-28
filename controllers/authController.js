@@ -48,3 +48,53 @@ exports.login = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  const userman = await user.findOne({ email: req.body.email });
+  if (!userman)
+    return next(new appError('there is no user with that email', 404));
+
+  const resetToken = userman.createResetToken();
+  await userman.save({ validateBeforeSave: false });
+  const resetURL = `${req.protocol}://${req.get(
+    'host'
+  )}/api/users/resetPassword/${resetToken}`;
+  try {
+    await new email(userman, resetURL).resetMail('resetToken');
+    res.status(200).json({
+      status: 'success',
+      message: 'Token sent to email!',
+    });
+  } catch (err) {
+    userman.resetToken = undefined;
+    userman.resetTokenTimer = undefined;
+    await userman.save({ validateBeforeSave: false });
+    return next(
+      new appError(
+        'There was an error sending the email. Try again later!',
+        500
+      )
+    );
+  }
+});
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  const userfresh = await user.findOne({
+    resetToken: req.params.token,
+    resetTokenTimer: { $gte: Date.now() },
+  });
+  if (!userfresh) return next(new appError('invalid token', 400));
+  userfresh.password = req.body.password;
+  userfresh.passwordValidate = req.body.passwordValidate;
+  userfresh.resetToken = undefined;
+  userfresh.resetTokenTimer = undefined;
+  await userfresh.save();
+  const token = jwt.sign({ id: userfresh._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+  res.status(200).json({
+    status: 'success',
+    token,
+    user: userfresh,
+  });
+});

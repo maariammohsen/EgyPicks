@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-
+const cookie = require('cookie-parser');
 const appError = require('./util/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json()); //building middleware function used to parse data
 
 app.use(express.static(`${__dirname}/images`));
-
+app.use(cookie());
 ///routes
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/users', userRouter);
