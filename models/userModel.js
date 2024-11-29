@@ -82,13 +82,16 @@ user.methods.correctPassword = async function (candidatePass, userPass) {
 };
 
 user.methods.createResetToken = function () {
-  const resettoken = crypto.randomBytes(32).toString('hex');
-  this.resetToken = crypto
-    .createHash('sha256')
-    .update(resettoken)
-    .digest('hex');
+  const randomItems = '1234567890';
+  let token = '';
+  for (let i = 0; i < 4; i++) {
+    token +=
+      randomItems[Math.floor(Math.random() * randomItems.length)] ||
+      randomItems[randomItems.length - 1];
+  }
+  this.resetToken = token;
   this.resetTokenTimer = Date.now() + 10 * 60 * 1000;
-  return this.resetToken;
+  return token;
 };
 
 const userModel = mongoose.model('User', user);

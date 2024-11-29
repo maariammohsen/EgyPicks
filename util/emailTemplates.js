@@ -139,8 +139,8 @@ const style = `<style>
     background-color: #55c57a; 
   }
   .btn-primary a {
-    background-color: #55c57a;
-    border-color: #55c57a;
+    background-color: #733660;
+    border-color: #733660;
     color: #ffffff; 
   }
   .last {
@@ -252,8 +252,8 @@ const style = `<style>
       background-color: #2e864b !important; 
     }
     .btn-primary a:hover {
-      background-color: #2e864b !important;
-      border-color: #2e864b !important; 
+      background-color: #5c2b4d !important;
+      border-color: #5c2b4d !important; 
     } 
   }
 </style>`;
@@ -313,7 +313,7 @@ const generatebaseEmail = (content) => {
 };
 
 exports.welcomeEmailTemplate = (content) => {
-  return generateWelcomeEmail(` <p>Hi ${content.firstName},</p>
+  return generatebaseEmail(` <p>Hi ${content.firstName},</p>
 <p>Welcome to EgyPicks, we're glad to have you 🎉🙏</p>
 <table class="btn btn-primary" role="presentation" border="0" cellpadding="0" cellspacing="0">
   <tbody>

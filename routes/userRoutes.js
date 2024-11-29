@@ -13,7 +13,8 @@ router.post('/sign-up', authController.signUp);
 router.post('/log-in', authController.login);
 
 router.post('/forgotPassword', authController.forgotPassword);
-router.post('/resetPassword/:token', authController.resetPassword);
+router.post('/resetPassword', authController.resetPassword);
+router.post('/resetPassword/:token', authController.verifyCode);
 
 router
   .route('/:id')

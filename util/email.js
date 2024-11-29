@@ -10,7 +10,7 @@ class Email {
 
   newTransporter() {
     return nodeMailer.createTransport({
-      host: process.env.EMAIL_HOST,
+      host: process.env.EMAIL_HOST, // smtp = simple mailing transfer protocal
       port: process.env.EMAIL_PORT,
       secure: false,
       auth: {
