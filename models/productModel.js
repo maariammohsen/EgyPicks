@@ -38,10 +38,6 @@ const productSchema = new mongoose.Schema({
   photo: String,
 
   title: String,
-
-  Sales: {
-    type: Number,
-  },
   slug: String,
   // review: {
   //   type: mongoose.schema.objectId,
@@ -52,6 +48,26 @@ const productSchema = new mongoose.Schema({
   //   type: mongoose.schema.objectId,
   //   ref: 'order',
   // },
+  brandId: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Brand',
+    required: true,
+  },
+  gender: { type: String, enum: ['Male', 'Female'], required: true },
+  material: {
+    type: String,
+    enum: ['Cotton', 'Polyester', 'Leather'],
+    required: true,
+  },
+  subCategory: {
+    type: String,
+    enum: ['Women', 'Men', 'Kids', 'Formal'],
+  },
+  discountPrice: {
+    type: Number,
+  },
+  avgRating: Number,
+  quantityRating: Number,
 });
 
 productSchema.pre('save', function (next) {
