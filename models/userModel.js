@@ -63,6 +63,7 @@ const user = new mongoose.Schema({
   },
   resetToken: String,
   resetTokenTimer: Date,
+  passwordChangedAt: Date,
   address: {
     type: String,
     required: [true, 'required! user must insert addresss!'],
@@ -92,6 +93,17 @@ user.methods.createResetToken = function () {
   this.resetToken = token;
   this.resetTokenTimer = Date.now() + 10 * 60 * 1000;
   return token;
+};
+
+user.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return JWTTimestamp < changedTimeStamp;
+  }
+  return false;
 };
 
 const userModel = mongoose.model('User', user);

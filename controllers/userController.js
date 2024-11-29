@@ -24,10 +24,11 @@ exports.getUser = catchAsync(async (req, res, next) => {
   });
 });
 
+//creating user manually
 exports.createUser = catchAsync(async (req, res, next) => {
   //it creates a new user from the request body that the user has inserted his information inside it
   const userMohtaram = await User.create(req.body);
-  await new email(userMohtaram).send('test', 'love letter');
+  await new email(userMohtaram).welcomeMail('welcome to EgyPicks!');
   res.status(200).json({
     status: 'Success!',
     data: userMohtaram,

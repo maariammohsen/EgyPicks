@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
-
+const authController = require('../controllers/authController');
 //router.param('id', productController.checkID);
 
 router
   .route('/')
-  .get(productController.getAllProducts)
+  .get(authController.protect, productController.getAllProducts)
   .post(productController.createProduct);
 
 router.route('/product-stats').get(productController.getProductStats);

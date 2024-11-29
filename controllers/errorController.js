@@ -17,6 +17,13 @@ const ValidatorErrorHandler = (err) => {
   return new appError(message, 400);
 };
 
+const JWTErrorHandler = () => {
+  return new appError('Invalid token. please log in again', 401);
+};
+
+const TokenExpiredErrorHandler = () => {
+  return new appError('Your token has been expired. please log in again', 401);
+};
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -50,7 +57,10 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
     if (err.name === 'CastError') error = CastErrorHandler(error);
     if (err.code === 11000) error = DuplicateFieldHandler(error);
-    if (err.name === 'ValidationError') error = ValidatorErrorHandler(error);
+    if (err.name === 'ValidationError') error = ValidatorErrorHandler();
+    if (err.name === 'JsonWebTokenError') error = JWTErrorHandler();
+    if (err.name === 'TokenExpiredError')
+      error = TokenExpiredErrorHandler(error);
     sendErrorProduction(error, res);
   }
 };

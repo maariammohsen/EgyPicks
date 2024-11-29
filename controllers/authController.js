@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const catchAsync = require('../util/catchAsync');
@@ -38,7 +39,6 @@ exports.signUp = catchAsync(async (req, res, next) => {
     birthDate: req.body.birthDate,
   });
 
-  const token = signedToken(newUser._id);
   await new email(newUser).welcomeMail('welcome to EgyPicks!');
 
   cookiesAndTokens(newUser, res, 201);
@@ -116,4 +116,33 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await userfresh.save();
   res.clearCookie('verifed');
   cookiesAndTokens(userfresh, res, 200);
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  if (!req.cookies.JWT) {
+    return next(new appError(`You're not logged in!`), 401);
+  }
+  //verification of token
+  const decoded = await promisify(jwt.verify)(
+    req.cookies.JWT,
+    process.env.JWT_SECRET
+  );
+  //check if user still exist
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(
+      new appError(
+        'The token belonging to this user does not longer exist',
+        401
+      )
+    );
+  }
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new appError('User recently changed password! please log in again', 401)
+    );
+  }
+  //grant access to protected route
+  req.user = currentUser;
+  next();
 });
