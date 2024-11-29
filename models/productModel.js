@@ -43,16 +43,25 @@ const productSchema = new mongoose.Schema({
     type: Number,
   },
   slug: String,
-  // review: {
-  //   type: mongoose.schema.objectId,
-  //   ref: 'review',
-  // },
+  
 
   // order: {
   //   type: mongoose.schema.objectId,
   //   ref: 'order',
   // },
+},{
+  toJSON:{virtuals:true},
+  toObject:{virtuals:true}
 });
+productSchema.virtual('reviews',{
+  ref: 'Review',
+  localField:'_id',
+  foreignField:'productId'
+}
+
+)
+  
+
 
 productSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
