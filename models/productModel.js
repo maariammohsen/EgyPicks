@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
 
   category: {
     type: String,
-    // enum: ['Clothes', 'Bags&Shoes', 'Accessories', 'Cosmetics', 'Fragrance'],
+    enum: ['Clothes', 'Bags&Shoes', 'Accessories', 'Cosmetics', 'Fragrance'],
     required: [true, 'Each product must have a category'],
   },
 
@@ -53,15 +53,13 @@ const productSchema = new mongoose.Schema({
     ref: 'Brand',
     required: true,
   },
-  gender: { type: String, enum: ['Male', 'Female'], required: true },
+  gender: { type: String, enum: ['Male', 'Female', 'Unisex'], required: true },
   material: {
     type: String,
     enum: ['Cotton', 'Polyester', 'Leather'],
-    required: true,
   },
   subCategory: {
     type: String,
-    enum: ['Women', 'Men', 'Kids', 'Formal'],
   },
   size: String,
 
@@ -70,6 +68,9 @@ const productSchema = new mongoose.Schema({
   },
   avgRating: Number,
   quantityRating: Number,
+  description: {
+    type: String,
+  },
 });
 
 productSchema.pre('save', function (next) {

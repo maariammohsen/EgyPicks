@@ -2,10 +2,16 @@ const Product = require('./../models/productModel');
 const apifeature = require('../util/apifeatures');
 const catchAsync = require('./../util/catchAsync');
 const AppError = require('./../util/appError');
+const slugify = require('slugify');
+const sharp = require('sharp');
+const multer = require('multer');
 
-//CRUD OPERATIONS
-
-//READ
+const storage = multer.memoryStorage();
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) cb(null, true);
+  cb(null, false);
+};
+const upload = multer({ storage, fileFilter });
 exports.getAllProducts = catchAsync(async (req, res, next) => {
   const query = new apifeature(Product.find(), req.query)
     .filter()
@@ -111,4 +117,17 @@ exports.getProductStats = catchAsync(async (req, res) => {
       stats,
     },
   });
+});
+
+exports.uploads = upload.single('photo');
+exports.resize = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  const slugName = slugify(req.body.name);
+  await sharp(req.file.buffer)
+    .resize(200, 200)
+    .toFormat('jpeg')
+    .toFile(`images/product-pics/${slug}.jpeg`);
+
+  req.body.photo = `${slug}.jpeg`;
+  next();
 });
