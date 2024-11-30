@@ -6,7 +6,11 @@ const authController = require('../controllers/authController');
 router
   .route('/Local-brands')
   .get(brandController.getAllBrands)
-  .post(brandController.createBrand);
+  .post(
+    brandController.uploads,
+    brandController.resizeImg,
+    brandController.createBrand
+  );
 
 router
   .route('/:id')

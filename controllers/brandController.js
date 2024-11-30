@@ -1,7 +1,15 @@
 const Brand = require('../models/brandModel');
 const appError = require('../util/appError');
 const catchAsync = require('../util/catchAsync');
-
+const multer = require('multer');
+const sharp = require('sharp');
+const slugify = require('slugify');
+const storage = multer.memoryStorage();
+const fileFilter = function (req, file, cb) {
+  if (file.mimetype.startsWith('image')) cb(null, true);
+  cb(null, false);
+};
+const upload = multer({ storage, fileFilter });
 exports.getAllBrands = catchAsync(async (req, res, next) => {
   const Brands = await Brand.find();
   res.status(200).json({
@@ -56,4 +64,18 @@ exports.deleteBrand = catchAsync(async (req, res, next) => {
     status: 'Success!',
     message: 'Brand is deleted successfully!',
   });
+});
+
+exports.uploads = upload.single('logo');
+
+exports.resizeImg = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  const slug = slugify(req.body.brandName);
+  await sharp(req.file.buffer)
+    .resize(200, 200)
+    .toFormat('jpeg')
+    .toFile(`images/brandLogo/${slug}.jpeg`);
+
+  req.body.logo = `${slug}.jpeg`;
+  next();
 });

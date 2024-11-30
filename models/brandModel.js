@@ -18,7 +18,7 @@ const brandSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    logo: String,
+    logo: { type: String, required: true },
   },
   {
     toJSON: { virtual: true },
