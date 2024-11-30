@@ -39,7 +39,7 @@ exports.updateBrand = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
   if (!brandFresh) {
-    return next(new appError('Cant find user with a matched ID', 404));
+    return next(new appError('Cant find the requested brand', 404));
   }
   res.status(200).json({
     status: 'Success!',
@@ -48,7 +48,7 @@ exports.updateBrand = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteBrand = catchAsync(async (req, res, next) => {
-  const deletedBrand = await User.findByIdAndDelete(req.params.id);
+  const deletedBrand = await Brand.findByIdAndDelete(req.params.id);
   if (!deletedBrand) {
     return next(new appError('user is not existed', 404));
   }

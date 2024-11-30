@@ -26,7 +26,7 @@ const brandSchema = new mongoose.Schema(
   }
 );
 
-Brand.virtual('products', {
+brandSchema.virtual('products', {
   ref: 'Product',
   localField: '_id',
   foreignField: 'brandId',

@@ -63,6 +63,8 @@ const productSchema = new mongoose.Schema({
     type: String,
     enum: ['Women', 'Men', 'Kids', 'Formal'],
   },
+  size: String,
+
   discountPrice: {
     type: Number,
   },
