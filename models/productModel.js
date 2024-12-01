@@ -70,6 +70,8 @@ const productSchema = new mongoose.Schema(
         'Licra',
         'Linen Cotton',
         'Quick-Drying Fabric',
+        'Waterproof',
+        'wool',
         'Trico Thread',
         'Milton',
         'Shiny Leather',
