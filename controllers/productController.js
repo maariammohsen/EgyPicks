@@ -126,8 +126,8 @@ exports.resize = catchAsync(async (req, res, next) => {
   await sharp(req.file.buffer)
     .resize(200, 200)
     .toFormat('jpeg')
-    .toFile(`images/product-pics/${slug}.jpeg`);
+    .toFile(`images/product-pics/${slugName}.jpeg`);
 
-  req.body.photo = `${slug}.jpeg`;
+  req.body.photo = `${slugName}.jpeg`;
   next();
 });

@@ -7,7 +7,11 @@ const authController = require('../controllers/authController');
 router
   .route('/')
   .get(authController.protect, productController.getAllProducts)
-  .post(productController.createProduct);
+  .post(
+    productController.uploads,
+    productController.resize,
+    productController.createProduct
+  );
 
 router.route('/product-stats').get(productController.getProductStats);
 
