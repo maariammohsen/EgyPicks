@@ -22,7 +22,6 @@ exports.getAllBrands = catchAsync(async (req, res, next) => {
 exports.getBrand = catchAsync(async (req, res, next) => {
   const myBrand = await Brand.findById(req.params.id).populate({
     path: 'products',
-    select: 'name image price discountPrice quantity',
   });
   if (!myBrand) {
     return next(new appError('Brand is not found!', 404));

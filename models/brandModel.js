@@ -21,8 +21,8 @@ const brandSchema = new mongoose.Schema(
     logo: { type: String, required: true },
   },
   {
-    toJSON: { virtual: true },
-    toObject: { virtual: true },
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
