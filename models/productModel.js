@@ -11,7 +11,14 @@ const productSchema = new mongoose.Schema(
 
     category: {
       type: String,
-      enum: ['Clothes', 'Bags&Shoes', 'Accessories', 'Cosmetics', 'Fragrance'],
+      enum: [
+        'Clothes',
+        'Bags',
+        'Shoes',
+        'Accessories',
+        'Cosmetics',
+        'Fragrance',
+      ],
       required: [true, 'Each product must have a category'],
     },
 
@@ -49,12 +56,30 @@ const productSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ['Male', 'Female', 'Unisex'],
+      enum: ['Male', 'Female', 'Unisex', 'Kids'],
       required: true,
     },
     material: {
       type: String,
-      enum: ['Cotton', 'Polyester', 'Leather'],
+      enum: [
+        'Cotton',
+        'Polyester',
+        'Leather',
+        'Rib Fabric',
+        'Microfiber Fabric',
+        'Licra',
+        'Linen Cotton',
+        'Quick-Drying Fabric',
+        'Trico Thread',
+        'Milton',
+        'Shiny Leather',
+        'Jeans',
+        'Crescent Fabric',
+        'Metallic snake leather',
+        'Textured Material',
+        'Faux Leather',
+        'Velvet',
+      ],
     },
     subCategory: {
       type: String,
