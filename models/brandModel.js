@@ -4,7 +4,7 @@ const brandSchema = new mongoose.Schema(
     brandName: {
       type: String,
       enum: [
-        'Azor',
+        'Amitiè',
         'Lilly',
         'Nuit',
         'Favelin',

@@ -81,6 +81,7 @@ const productSchema = new mongoose.Schema(
         'Textured Material',
         'Faux Leather',
         'Velvet',
+        'Stainless Steel',
       ],
     },
     subCategory: {
