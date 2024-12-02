@@ -17,6 +17,7 @@ const productSchema = new mongoose.Schema({
   quantity: {
     type: Number,
     required: true,
+    min: 0,
   },
 
   brandName: {
