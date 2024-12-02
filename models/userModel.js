@@ -91,7 +91,7 @@ user.methods.createResetToken = function () {
       randomItems[randomItems.length - 1];
   }
   this.resetToken = token;
-  this.resetTokenTimer = Date.now() + 10 * 60 * 1000;
+  this.resetTokenTimer = Date.now() + 10 * 60 * 1000; //10 minutes
   return token;
 };
 

@@ -7,7 +7,7 @@ const appError = require('../util/appError');
 
 const signedToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: process.env.JWT_EXPIRES_IN, //options
   });
 };
 
@@ -16,7 +16,7 @@ const cookiesAndTokens = (user, res, statusCode) => {
   const cookiesOptions = {
     httpOnly: true,
     secure: false,
-    expires: new Date(Date.now() + 90 * 1000 * 60 * 60 * 24), //milliseconds to days
+    expires: new Date(Date.now() + 90 * 1000 * 60 * 60 * 24), //milliseconds to 90 days
   };
   user.password = undefined;
   res.cookie('JWT', token, cookiesOptions);

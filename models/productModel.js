@@ -1,59 +1,106 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
-const productSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'A product must have a name'],
-    unique: true,
+const productSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'A product must have a name'],
+      unique: true,
+    },
+
+    category: {
+      type: String,
+      enum: [
+        'Clothes',
+        'Bags',
+        'Shoes',
+        'Accessories',
+        'Cosmetics',
+        'Fragrance',
+      ],
+      required: [true, 'Each product must have a category'],
+    },
+
+    quantity: {
+      type: Number,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: [true, 'A product must have a price'],
+    },
+
+    show: {
+      type: Boolean,
+      default: true,
+    },
+
+    photo: String,
+
+    title: String,
+    slug: String,
+    // review: {
+    //   type: mongoose.schema.objectId,
+    //   ref: 'review',
+    // },
+
+    // order: {
+    //   type: mongoose.schema.objectId,
+    //   ref: 'order',
+    // },
+    brandId: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Brand',
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Unisex', 'Kids'],
+      required: true,
+    },
+    material: {
+      type: String,
+      enum: [
+        'Cotton',
+        'Polyester',
+        'Leather',
+        'Rib Fabric',
+        'Microfiber Fabric',
+        'Licra',
+        'Linen Cotton',
+        'Quick-Drying Fabric',
+        'Waterproof',
+        'wool',
+        'Trico Thread',
+        'Milton',
+        'Shiny Leather',
+        'Jeans',
+        'Crescent Fabric',
+        'Metallic snake leather',
+        'Textured Material',
+        'Faux Leather',
+        'Velvet',
+        'Stainless Steel',
+      ],
+    },
+    subCategory: {
+      type: String,
+    },
+    size: String,
+
+    discountPrice: {
+      type: Number,
+    },
+    avgRating: Number,
+    quantityRating: Number,
+    description: {
+      type: String,
+    },
   },
 
-  category: {
-    type: String,
-    // enum: ['Clothes', 'Bags&Shoes', 'Accessories', 'Cosmetics', 'Fragrance'],
-    required: [true, 'Each product must have a category'],
-  },
-
-  quantity: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-
-  brandName: {
-    type: String,
-    // enum: ['basiclook', 'town team', 'lilly', 'Bou', 'azor', 'Janelle', 'favelin', 'nuit'],
-    required: [true, 'A product must belong to a brand'],
-  },
-
-  Price: {
-    type: Number,
-    required: [true, 'A product must have a price'],
-  },
-
-  show: {
-    type: Boolean,
-    default: true,
-  },
-
-  photo: String,
-
-  title: String,
-
-  Sales: {
-    type: Number,
-  },
-  slug: String,
-  // review: {
-  //   type: mongoose.schema.objectId,
-  //   ref: 'review',
-  // },
-
-  // order: {
-  //   type: mongoose.schema.objectId,
-  //   ref: 'order',
-  // },
-});
+  { timestamps: true } //created at
+);
 
 productSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
