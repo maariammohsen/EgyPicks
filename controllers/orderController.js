@@ -76,6 +76,8 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
       })
     );
   }
+
+  exports.bestSeller = catchAsync(async (req, res, next) => {});
   res.status(200).json({
     status: 'success',
     data: { order },

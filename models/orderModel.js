@@ -32,8 +32,9 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
       },
-      fixedQuantity: {
-        type: Number,
+      size: {
+        type: String,
+        required: true,
       },
     },
   ],
