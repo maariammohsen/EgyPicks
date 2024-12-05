@@ -2,7 +2,7 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const catchAsync = require('../util/catchAsync');
-const email = require('../util/Email');
+const email = require('../util/email');
 const appError = require('../util/appError');
 
 const signedToken = (id) => {

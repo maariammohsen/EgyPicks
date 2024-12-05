@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
 const appError = require('../util/appError');
 const catchAsync = require('../util/catchAsync');
-const email = require('../util/Email.js');
+const email = require('../util/email.js');
 
 const filteredObj = (obj, ...allowedFields) => {
   const newObj = {};
