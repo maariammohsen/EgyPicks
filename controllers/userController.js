@@ -46,6 +46,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   if (!byeUser) {
     return next(new appError('user is not existed', 404));
   }
+
   res.status(200).json({
     status: 'Success!',
     message: 'user is deleted successfully!',
