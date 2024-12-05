@@ -5,7 +5,8 @@ const AppError = require('./../util/appError');
 const slugify = require('slugify');
 const sharp = require('sharp');
 const multer = require('multer');
-
+const fs = require('fs');
+const path = require('path');
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) cb(null, true);
@@ -82,7 +83,7 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
   if (!product) {
     return next(new AppError('No product found with that id', 404));
   }
-
+  fs.unlinkSync(`./images/product-pics/${product.photo}`);
   res.status(204).json({
     status: 'success',
   });

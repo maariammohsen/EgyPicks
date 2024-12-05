@@ -117,7 +117,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   res.clearCookie('verifed');
   cookiesAndTokens(userfresh, res, 200);
 });
-
+///AUTHENTICATION MIDDLEWARE
 exports.protect = catchAsync(async (req, res, next) => {
   if (!req.cookies.JWT) {
     return next(new appError(`You're not logged in!`), 401);
@@ -132,7 +132,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   if (!currentUser) {
     return next(
       new appError(
-        'The token belonging to this user does not longer exist',
+        'The user belonging to this token does not longer exist',
         401
       )
     );
@@ -146,3 +146,15 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+///AUTHORIZATION MIDDLEWARE
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new appError('You dont have the permission to do this action', 403)
+      );
+    }
+    next();
+  };
+};

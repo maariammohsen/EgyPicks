@@ -15,11 +15,15 @@ router.post('/log-in', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.post('/resetPassword', authController.resetPassword);
 router.post('/resetPassword/:token', authController.verifyCode);
-
+router.patch('/updateMe', authController.protect, userController.updateMe);
 router
   .route('/:id')
   .get(userController.getUser)
-  .delete(userController.deleteUser)
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin'),
+    userController.deleteUser
+  )
   .patch(userController.updateUser);
 
 module.exports = router;
