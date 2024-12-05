@@ -2,6 +2,7 @@ const Order = require('../models/orderModel');
 const catchAsync = require('../util/catchAsync');
 const appError = require('../util/appError');
 const Product = require('../models/productModel');
+const mongoose = require('mongoose');
 exports.createOrder = catchAsync(async (req, res, next) => {
   const order = await Order.create({
     user: req.user._id,
@@ -82,8 +83,8 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.bestSeller = catchAsync(async (req, res, next) => {
-  const order = await Order.find();
+exports.bestSeller = async (brandId) => {
+  const id = new mongoose.Types.ObjectId(brandId);
   const best = await Order.aggregate([
     // select only completed orders
     { $match: { status: { $not: { $eq: 'refunded' } } } },
@@ -107,6 +108,12 @@ exports.bestSeller = catchAsync(async (req, res, next) => {
     },
     // remove the array
     { $unwind: '$product' },
+    // { $addFields: { brandId: '$product.brandId' } },
+    {
+      $match: {
+        'product.brandId': id,
+      },
+    },
     // sort the aggregate for total sales
     {
       $sort: {
@@ -116,9 +123,5 @@ exports.bestSeller = catchAsync(async (req, res, next) => {
     // remove id from row
     { $project: { _id: 0 } },
   ]);
-  res.status(200).json({
-    status: 'success',
-    result: best.length,
-    data: { best },
-  });
-});
+  return best;
+};

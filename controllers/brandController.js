@@ -5,6 +5,7 @@ const multer = require('multer');
 const sharp = require('sharp');
 const slugify = require('slugify');
 const storage = multer.memoryStorage();
+const orderController = require('./orderController');
 const fileFilter = function (req, file, cb) {
   if (file.mimetype.startsWith('image')) cb(null, true);
   cb(null, false);
@@ -77,4 +78,13 @@ exports.resizeImg = catchAsync(async (req, res, next) => {
 
   req.body.logo = `${slug}.jpeg`;
   next();
+});
+
+exports.bestseller = catchAsync(async (req, res, next) => {
+  const data = await orderController.bestSeller(req.params.id);
+  res.status(200).json({
+    status: 'success',
+    result: data.length,
+    data: { data },
+  });
 });

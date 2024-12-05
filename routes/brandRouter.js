@@ -18,4 +18,6 @@ router
   .delete(brandController.deleteBrand)
   .get(brandController.getBrand);
 
+router.route('/:id/bestSellers').get(brandController.bestseller);
+
 module.exports = router;
