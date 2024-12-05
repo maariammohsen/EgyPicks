@@ -8,6 +8,7 @@ router
   .get(orderController.getAllOrders)
   .post(authController.protect, orderController.createOrder);
 router.get('/me', authController.protect, orderController.getUserOrders);
+router.get('/best-sellers', orderController.bestSeller);
 router
   .route('/:id')
   .get(authController.protect, orderController.getOrder)

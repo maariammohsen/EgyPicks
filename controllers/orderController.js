@@ -76,10 +76,49 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
       })
     );
   }
-
-  exports.bestSeller = catchAsync(async (req, res, next) => {});
   res.status(200).json({
     status: 'success',
     data: { order },
+  });
+});
+
+exports.bestSeller = catchAsync(async (req, res, next) => {
+  const order = await Order.find();
+  const best = await Order.aggregate([
+    // select only completed orders
+    { $match: { status: { $not: { $eq: 'refunded' } } } },
+    // make document for each products
+    { $unwind: '$productsDetails' },
+    // group by product and calculate the total sales
+    {
+      $group: {
+        _id: '$productsDetails.product',
+        totalSales: { $sum: '$productsDetails.quantity' },
+      },
+    },
+    // get product detail for each product
+    {
+      $lookup: {
+        from: 'products',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'product',
+      },
+    },
+    // remove the array
+    { $unwind: '$product' },
+    // sort the aggregate for total sales
+    {
+      $sort: {
+        totalSales: -1,
+      },
+    },
+    // remove id from row
+    { $project: { _id: 0 } },
+  ]);
+  res.status(200).json({
+    status: 'success',
+    result: best.length,
+    data: { best },
   });
 });
