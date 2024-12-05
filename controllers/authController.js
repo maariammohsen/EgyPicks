@@ -19,6 +19,7 @@ const cookiesAndTokens = (user, res, statusCode) => {
     expires: new Date(Date.now() + 90 * 1000 * 60 * 60 * 24), //milliseconds to 90 days
   };
   user.password = undefined;
+  if (process.env.NODE_ENV === 'production') cookiesOptions.secure = true;
   res.cookie('JWT', token, cookiesOptions);
   res.status(statusCode).json({
     status: 'success',

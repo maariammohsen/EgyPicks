@@ -6,6 +6,7 @@ const cookie = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cors = require('cors');
 
 const appError = require('./util/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -16,6 +17,18 @@ const orderRouter = require('./routes/orderRoutes');
 const brandRouter = require('./routes/brandRouter');
 const app = express();
 
+app.enable('trust proxy');
+
+app.use(
+  cors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: '*',
+    credentials: true,
+  })
+);
+
+app.options('*', cors());
 ///middlewares
 app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
