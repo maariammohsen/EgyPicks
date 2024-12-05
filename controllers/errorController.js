@@ -57,10 +57,9 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
     if (err.name === 'CastError') error = CastErrorHandler(error);
     if (err.code === 11000) error = DuplicateFieldHandler(error);
-    if (err.name === 'ValidationError') error = ValidatorErrorHandler();
+    if (err.name === 'ValidationError') error = ValidatorErrorHandler(error);
     if (err.name === 'JsonWebTokenError') error = JWTErrorHandler();
-    if (err.name === 'TokenExpiredError')
-      error = TokenExpiredErrorHandler(error);
+    if (err.name === 'TokenExpiredError') error = TokenExpiredErrorHandler();
     sendErrorProduction(error, res);
   }
 };
