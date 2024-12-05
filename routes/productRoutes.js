@@ -6,7 +6,7 @@ const authController = require('../controllers/authController');
 
 router
   .route('/')
-  .get(authController.protect, productController.getAllProducts)
+  .get(productController.getAllProducts)
   .post(
     productController.uploads,
     productController.resize,
