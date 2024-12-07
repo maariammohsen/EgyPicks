@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
-const reviewSchema = new mongoose.schema({
+const reviewSchema = new mongoose.Schema({
     rating:{
-        type: int ,
+        type: Number ,
         required: true
     },
 
@@ -12,16 +12,16 @@ const reviewSchema = new mongoose.schema({
         required:true
     },
     userId:{
-        type:mongoose.schema.objectId,
+        type:mongoose.Schema.ObjectId,
         ref: 'User',
         required:[true,'review must belong to a user']    
     },
     productId:{
-        type:mongoose.schema.objectId,
+        type:mongoose.Schema.ObjectId,
         ref:'Product',
         required:[true, 'review must belong to a product' ]
     }
 });
 
-const Review = mongoose.model(Review, reviewSchema);
-model.export = Review;
+const Review = mongoose.model('Review', reviewSchema);
+module.exports = Review;
