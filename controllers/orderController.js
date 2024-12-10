@@ -47,7 +47,7 @@ exports.deleteOrder = catchAsync(async (req, res, next) => {
 
 exports.getOrder = catchAsync(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
-  if (order.user.toString() !== req.user_id.toString())
+  if (order.user.toString() !== req.user._id.toString())
     return next(
       new appError('you do not permission to access this order'),
       403

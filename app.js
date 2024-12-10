@@ -28,7 +28,6 @@ app.use(
   })
 );
 
-app.options('*', cors());
 ///middlewares
 app.use(helmet());
 if (process.env.NODE_ENV === 'development') {

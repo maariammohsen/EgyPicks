@@ -23,6 +23,7 @@ const cookiesAndTokens = (user, res, statusCode) => {
   res.cookie('JWT', token, cookiesOptions);
   res.status(statusCode).json({
     status: 'success',
+    token,
     data: {
       user,
     },
@@ -48,7 +49,10 @@ exports.signUp = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return next(new appError('please provide invalid email & password!'), 400);
+    return next(
+      new appError('invalid email & password!please provide a valid one'),
+      400
+    );
   }
   const user = await User.findOne({ email }).select('+password');
 
@@ -114,10 +118,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   userfresh.passwordValidate = req.body.passwordValidate;
   userfresh.resetToken = undefined;
   userfresh.resetTokenTimer = undefined;
+  userfresh.passwordChangedAt = Date.now();
   await userfresh.save();
   res.clearCookie('verifed');
   cookiesAndTokens(userfresh, res, 200);
 });
+
 ///AUTHENTICATION MIDDLEWARE
 exports.protect = catchAsync(async (req, res, next) => {
   if (!req.cookies.JWT) {
