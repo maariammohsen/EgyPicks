@@ -102,6 +102,10 @@ const productSchema = new mongoose.Schema(
   { timestamps: true } //created at
 );
 
+productSchema.index({
+  price: 1,
+});
+
 productSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   //this will point to the current document
