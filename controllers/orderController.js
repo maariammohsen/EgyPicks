@@ -8,7 +8,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
     user: req.user._id,
     productsDetails: req.body.productsDetails,
   });
-
+  console.log(req.body);
   res.status(200).json({
     status: 'success',
     data: { order },
