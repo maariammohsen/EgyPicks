@@ -87,7 +87,7 @@ const productSchema = new mongoose.Schema(
     subCategory: {
       type: String,
     },
-    size: String,
+    sizes: [String],
 
     discountPrice: {
       type: Number,
