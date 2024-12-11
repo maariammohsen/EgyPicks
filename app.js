@@ -19,14 +19,9 @@ const app = express();
 
 app.enable('trust proxy');
 
-app.use(
-  cors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: '*',
-    credentials: true,
-  })
-);
+app.use(cors());
+
+app.options('*', cors());
 
 ///middlewares
 app.use(helmet());
