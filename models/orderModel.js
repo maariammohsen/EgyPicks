@@ -38,7 +38,10 @@ const orderSchema = new mongoose.Schema({
       },
     },
   ],
-  paymentType: ['Cash On Delivery (COD)', 'Online Payment'],
+  paymentType: {
+    type: String,
+    enum: ['Cash On Delivery (COD)', 'Online Payment'],
+  },
 });
 
 orderSchema.pre('save', function (next) {
