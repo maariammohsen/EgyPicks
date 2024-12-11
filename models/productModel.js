@@ -43,6 +43,8 @@ const productSchema = new mongoose.Schema({
     type: Number,
   },
   slug: String,
+  avgRating: Number,
+  quantityRating: Number,
   
 
   // order: {
