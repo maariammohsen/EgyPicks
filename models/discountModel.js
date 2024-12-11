@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const discountSchema = new mongoose.Schema({
   discountCode: {
     type: String,
@@ -11,6 +10,7 @@ const discountSchema = new mongoose.Schema({
   },
   validUntil: {
     type: Date,
+    required: [true, 'Promo Code must have an expiration date!'],
   },
   order: {
     ref: 'Order',

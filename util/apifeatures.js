@@ -32,7 +32,7 @@ class apifeatures {
   }
   pagination() {
     const page = this.querystr.page * 1 || 1;
-    const product = this.querystr.limit * 1 || 250;
+    const product = this.querystr.limit * 1 || 8;
     const pass = (page - 1) * product;
     this.query = this.query.skip(pass).limit(product);
     return this;

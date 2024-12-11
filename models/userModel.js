@@ -75,11 +75,6 @@ const user = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-user.virtual('products', {
-  ref: 'Product',
-  foreignField: 'userId',
-  localField: '_id',
-});
 
 user.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
