@@ -18,10 +18,9 @@ const brandRouter = require('./routes/brandRouter');
 const app = express();
 
 app.enable('trust proxy');
+app.options('*', cors());
 
 app.use(cors());
-
-app.options('*', cors());
 
 ///middlewares
 app.use(helmet());
