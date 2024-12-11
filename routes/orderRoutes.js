@@ -5,7 +5,11 @@ const orderController = require('../controllers/orderController');
 
 router
   .route('/')
-  .get(orderController.getAllOrders)
+  .get(
+    authController.protect,
+    authController.restrictTo('admin'),
+    orderController.getAllOrders
+  )
   .post(authController.protect, orderController.createOrder);
 router.get('/me', authController.protect, orderController.getUserOrders);
 router.get('/best-sellers', orderController.bestSeller);
