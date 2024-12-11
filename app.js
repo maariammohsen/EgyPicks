@@ -18,10 +18,17 @@ const brandRouter = require('./routes/brandRouter');
 const app = express();
 
 app.enable('trust proxy');
+
+app.use(
+  cors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: '*',
+    credentials: true,
+  })
+);
+
 app.options('*', cors());
-
-app.use(cors());
-
 ///middlewares
 app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
