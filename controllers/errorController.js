@@ -1,6 +1,7 @@
 const appError = require('../util/appError');
 
 const CastErrorHandler = (err) => {
+  ///invalid id
   const message = `invalid ${err.path}:${err.value}`;
   return new appError(message, 400);
 };
@@ -25,6 +26,7 @@ const TokenExpiredErrorHandler = () => {
   return new appError('Your token has been expired. please log in again', 401);
 };
 const sendErrorDev = (err, res) => {
+  console.error('ERROR', err);
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
@@ -55,12 +57,12 @@ module.exports = (err, req, res, next) => {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
+    error.message = err.message;
     if (err.name === 'CastError') error = CastErrorHandler(error);
     if (err.code === 11000) error = DuplicateFieldHandler(error);
-    if (err.name === 'ValidationError') error = ValidatorErrorHandler();
+    if (err.name === 'ValidationError') error = ValidatorErrorHandler(error);
     if (err.name === 'JsonWebTokenError') error = JWTErrorHandler();
-    if (err.name === 'TokenExpiredError')
-      error = TokenExpiredErrorHandler(error);
+    if (err.name === 'TokenExpiredError') error = TokenExpiredErrorHandler();
     sendErrorProduction(error, res);
   }
 };

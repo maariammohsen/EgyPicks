@@ -6,8 +6,12 @@ const authController = require('../controllers/authController');
 
 router
   .route('/')
-  .get(authController.protect, productController.getAllProducts)
-  .post(productController.createProduct);
+  .get(productController.getAllProducts)
+  .post(
+    productController.uploads,
+    productController.resize,
+    productController.createProduct
+  );
 
 router.route('/product-stats').get(productController.getProductStats);
 
@@ -15,6 +19,10 @@ router
   .route('/:id')
   .get(productController.getProduct)
   .patch(productController.updateProduct)
-  .delete(productController.deleteProduct);
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin'),
+    productController.deleteProduct
+  );
 
 module.exports = router;

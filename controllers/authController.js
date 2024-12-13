@@ -2,12 +2,12 @@ const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const catchAsync = require('../util/catchAsync');
-const email = require('../util/Email');
+const email = require('../util/email');
 const appError = require('../util/appError');
 
 const signedToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: process.env.JWT_EXPIRES_IN, //options
   });
 };
 
@@ -16,12 +16,14 @@ const cookiesAndTokens = (user, res, statusCode) => {
   const cookiesOptions = {
     httpOnly: true,
     secure: false,
-    expires: new Date(Date.now() + 90 * 1000 * 60 * 60 * 24), //milliseconds to days
+    expires: new Date(Date.now() + 90 * 1000 * 60 * 60 * 24), //milliseconds to 90 days
   };
   user.password = undefined;
+  if (process.env.NODE_ENV === 'production') cookiesOptions.secure = true;
   res.cookie('JWT', token, cookiesOptions);
   res.status(statusCode).json({
     status: 'success',
+    token,
     data: {
       user,
     },
@@ -47,7 +49,10 @@ exports.signUp = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return next(new appError('please provide invalid email & password!'), 400);
+    return next(
+      new appError('invalid email & password!please provide a valid one'),
+      400
+    );
   }
   const user = await User.findOne({ email }).select('+password');
 
@@ -113,26 +118,32 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   userfresh.passwordValidate = req.body.passwordValidate;
   userfresh.resetToken = undefined;
   userfresh.resetTokenTimer = undefined;
+  userfresh.passwordChangedAt = Date.now();
   await userfresh.save();
   res.clearCookie('verifed');
   cookiesAndTokens(userfresh, res, 200);
 });
 
+///AUTHENTICATION MIDDLEWARE
 exports.protect = catchAsync(async (req, res, next) => {
-  if (!req.cookies.JWT) {
-    return next(new appError(`You're not logged in!`), 401);
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.JWT) {
+    token = req.cookies.JWT;
   }
+  if (!token) return next(new appError(`You're not logged in!`), 401);
   //verification of token
-  const decoded = await promisify(jwt.verify)(
-    req.cookies.JWT,
-    process.env.JWT_SECRET
-  );
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
   //check if user still exist
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
     return next(
       new appError(
-        'The token belonging to this user does not longer exist',
+        'The user belonging to this token does not longer exist',
         401
       )
     );
@@ -146,3 +157,15 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+///AUTHORIZATION MIDDLEWARE
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new appError('You dont have the permission to do this action', 403)
+      );
+    }
+    next();
+  };
+};

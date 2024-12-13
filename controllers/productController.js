@@ -2,10 +2,17 @@ const Product = require('./../models/productModel');
 const apifeature = require('../util/apifeatures');
 const catchAsync = require('./../util/catchAsync');
 const AppError = require('./../util/appError');
-
-//CRUD OPERATIONS
-
-//READ
+const slugify = require('slugify');
+const sharp = require('sharp');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+const storage = multer.memoryStorage();
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) cb(null, true);
+  cb(null, false);
+};
+const upload = multer({ storage, fileFilter });
 exports.getAllProducts = catchAsync(async (req, res, next) => {
   const query = new apifeature(Product.find(), req.query)
     .filter()
@@ -23,9 +30,11 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
   });
 });
 
-
 exports.getProduct = catchAsync(async (req, res, next) => {
-  const product = await Product.findById(req.params.id).populate('reviews');
+  const product = await Product.findById(req.params.id)
+    .populate('brandId')
+    .populate('review');
+
   if (!product) {
     return next(new AppError('No product found with that id', 404));
   }
@@ -77,7 +86,7 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
   if (!product) {
     return next(new AppError('No product found with that id', 404));
   }
-
+  fs.unlinkSync(`./images/product-pics/${product.photo}`);
   res.status(204).json({
     status: 'success',
   });
@@ -112,4 +121,17 @@ exports.getProductStats = catchAsync(async (req, res) => {
       stats,
     },
   });
+});
+
+exports.uploads = upload.single('photo');
+exports.resize = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  const slugName = slugify(req.body.name);
+  await sharp(req.file.buffer)
+    .resize(200, 200)
+    .toFormat('jpeg')
+    .toFile(`images/product-pics/${slugName}.jpeg`);
+
+  req.body.photo = `${slugName}.jpeg`;
+  next();
 });
