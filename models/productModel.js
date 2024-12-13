@@ -105,6 +105,11 @@ const productSchema = new mongoose.Schema(
 productSchema.index({
   price: 1,
 });
+productSchema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'productId',
+});
 
 productSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });

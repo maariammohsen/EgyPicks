@@ -13,6 +13,7 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const userRouter = require('./routes/userRoutes');
 const productRouter = require('./routes/productRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const brandRouter = require('./routes/brandRouter');
 const app = express();
@@ -51,6 +52,7 @@ app.use(cookie());
 ///routes
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.use('/api/v1/orders', orderRouter);
 
