@@ -45,9 +45,10 @@ const orderSchema = new mongoose.Schema({
 });
 
 orderSchema.pre('save', function (next) {
-  this.productsDetails.forEach((ele) => {
-    this.total_amount += ele.price * ele.quantity;
-  });
+  if (this.total_amount === 0)
+    this.productsDetails.forEach((ele) => {
+      this.total_amount += ele.price * ele.quantity;
+    });
   next();
 });
 
