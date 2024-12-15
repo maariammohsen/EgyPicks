@@ -76,6 +76,16 @@ const user = new mongoose.Schema(
   }
 );
 
+user.virtual('addresses', {
+  ref: 'Address',
+  localField: '_id',
+  foreignField: 'addressId',
+});
+
+user.pre('find', async function (next) {
+  this.populate('Addresses');
+  next();
+});
 user.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
