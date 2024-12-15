@@ -82,12 +82,12 @@ exports.createSession = catchAsync(async (req, res, next) => {
 });
 
 const updateStatus = (orderId) => {
-   Order.findById(orderId).then((order)=>{
-    order.status = "received"
-    order.save().then((order){
-      console.log("done")
-    })
-   });
+  Order.findById(orderId).then((order) => {
+    order.status = 'received';
+    order.save().then((order) => {
+      console.log('done');
+    });
+  });
 };
 
 exports.webhookSession = (req, res, next) => {
