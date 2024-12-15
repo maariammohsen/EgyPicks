@@ -64,6 +64,7 @@ app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/brands', brandRouter);
 app.use('/api/v1/discounts', discountRouter);
 app.use('/api/v1/addresses', addressRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new appError(`can't find ${req.originalUrl} on this server!`, 404));
