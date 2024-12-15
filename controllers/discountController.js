@@ -1,7 +1,34 @@
 const appError = require('../util/appError');
 const Discount = require('../models/discountModel');
 const catchAsync = require('../util/catchAsync');
+const userModel = require('../models/userModel');
 
+exports.promocode = catchAsync(async (req, res, next) => {
+  const promo = await Discount.findOne({
+    discountCode: req.body.discountCode,
+    validUntil: { $gte: Date.now() },
+  });
+  if (!promo) {
+    return next(
+      new appError(
+        "Can't find a matching promocode! please insert a valid one!",
+        404
+      )
+    );
+  }
+  if (req.user.usedPromo.includes(promo._id)) {
+    return next(
+      new appError(
+        'This promocode is already used! please insert a valid one!',
+        404
+      )
+    );
+  }
+  res.status(200).json({
+    status: 'success',
+    data: { promo },
+  });
+});
 exports.createDiscount = catchAsync(async (req, res, next) => {
   const newDiscount = await Discount.create(req.body);
   res.status(201).json({
