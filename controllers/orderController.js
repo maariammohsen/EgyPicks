@@ -102,8 +102,8 @@ exports.webhookSession = (req, res, next) => {
   }
   if (event.type === 'checkout.session.completed') {
     updateOrder(event.data.object.client_reference_id);
-    res.status(200).json({ received: true });
   }
+  res.status(200).json({ received: true });
 };
 
 exports.createOrder = catchAsync(async (req, res, next) => {
