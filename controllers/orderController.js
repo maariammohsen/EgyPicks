@@ -101,7 +101,7 @@ exports.webhookSession = (req, res, next) => {
   }
   console.log(event);
   if (event.type === 'checkout.session.completed') {
-    updateOrder(event.order.object.client_reference_id);
+    updateOrder(event.data.object.client_reference_id);
     res.status(200).json({ received: true });
   }
 };
