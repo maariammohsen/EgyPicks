@@ -81,11 +81,13 @@ exports.createSession = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: { session } });
 });
 
-const updateStatus = async (orderId) => {
-  const order = await Order.findById(orderId);
-  order.status = 'received';
-  console.log(order);
-  await order.save();
+const updateStatus = (orderId) => {
+   Order.findById(orderId).then((order)=>{
+    order.status = "received"
+    order.save().then((order){
+      console.log("done")
+    })
+   });
 };
 
 exports.webhookSession = (req, res, next) => {
