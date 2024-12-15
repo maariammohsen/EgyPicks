@@ -1,4 +1,5 @@
 const Order = require('../models/orderModel');
+const Discount = require('../models/discountModel');
 const catchAsync = require('../util/catchAsync');
 const appError = require('../util/appError');
 const Product = require('../models/productModel');
@@ -8,6 +9,14 @@ const cc = require('currency-converter-lt');
 
 exports.createSession = catchAsync(async (req, res, next) => {
   //create order
+  if (req.body.appliedDiscount) {
+    const discount = Discount.findOne({
+      _id: req.body.appliedDiscount,
+      validUntil: { $gte: Date.now() },
+    });
+    if (!discount)
+      return next(new appError('there is no discount available', 400));
+  }
   let order = await Order.create({
     productsDetails: req.body.productsDetails,
     user: req.user._id,

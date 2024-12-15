@@ -17,6 +17,10 @@ const orderSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     required: [true, 'order must belong to user'],
   },
+  appliedDiscount: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Discount',
+  },
   productsDetails: [
     {
       product: {
