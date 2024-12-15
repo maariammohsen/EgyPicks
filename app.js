@@ -18,8 +18,6 @@ const productRouter = require('./routes/productRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const orderRouter = require('./routes/orderRoutes');
 const brandRouter = require('./routes/brandRouter');
-const discountRouter = require('./routes/discountRoutes');
-const addressRouter = require('./routes/addressRoutes');
 const app = express();
 
 app.enable('trust proxy');
@@ -60,11 +58,11 @@ app.use(cookie());
 ///routes
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/orders', orderRouter);
-app.use('/api/v1/brands', brandRouter);
-app.use('/api/v1/discounts', discountRouter);
-app.use('/api/v1/addresses', addressRouter);
 app.use('/api/v1/reviews', reviewRouter);
+
+app.use('/api/v1/orders', orderRouter);
+
+app.use('/api/v1/brands', brandRouter);
 
 app.all('*', (req, res, next) => {
   next(new appError(`can't find ${req.originalUrl} on this server!`, 404));

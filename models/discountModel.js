@@ -5,14 +5,17 @@ const discountSchema = new mongoose.Schema({
     required: [true, 'A promo code must be inserted!'],
   },
   discountPercentage: {
-    type: Number,
-    max: 90,
-    min: 5,
+    type: String,
     required: [true, 'A discount code must be inserted!'],
   },
   validUntil: {
     type: Date,
     required: [true, 'Promo Code must have an expiration date!'],
+  },
+  order: {
+    ref: 'Order',
+    type: mongoose.Schema.ObjectId,
+    required: [true, 'Discount must belong to an order'],
   },
 });
 

@@ -9,34 +9,14 @@ const user = new mongoose.Schema(
       enum: ['admin', 'user'],
       default: 'user',
     },
-    Fname: {
+    name: {
       type: String,
-      required: [true, 'required! user must have a first name'],
+      required: [true, 'required! user must have a name'],
       validate: {
         validator: (val) => {
           return /^[a-zA-Z0-9-]+$/.test(val);
         },
-        message:
-          "user's first name must contain letters & numbers and no white spaces",
-      },
-    },
-    Lname: {
-      type: String,
-      required: [true, 'required! user must have a last name'],
-      validate: {
-        validator: (val) => {
-          return /^[a-zA-Z0-9-]+$/.test(val);
-        },
-        message:
-          "user's last name must contain letters & numbers and no white spaces",
-      },
-    },
-    fullName: {
-      type: String,
-      default: function () {
-        return `${this.Fname.charAt(0).toUpperCase() + this.Fname.slice(1)}${
-          this.Lname.charAt(0).toUpperCase() + this.Lname.slice(1)
-        }`;
+        message: 'username must contain letters & numbers and no white spaces',
       },
     },
     birthDate: {
@@ -85,17 +65,10 @@ const user = new mongoose.Schema(
     resetToken: String,
     resetTokenTimer: Date,
     passwordChangedAt: Date,
-    addresses: [
-      {
-        type: mongoose.Schema.ObjectId,
-        required: [true, 'required! user must insert addresss!'],
-      },
-    ],
-    usedPromo: [
-      {
-        type: mongoose.Schema.ObjectId,
-      },
-    ],
+    address: {
+      type: String,
+      required: [true, 'required! user must insert addresss!'],
+    },
   },
   {
     toJSON: { virtuals: true },

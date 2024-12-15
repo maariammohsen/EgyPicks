@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const Product = require('./productModel');
-const Discount = require('./discountModel');
-const { promocode } = require('../controllers/discountController');
 const orderSchema = new mongoose.Schema({
   status: {
     type: String,
@@ -18,10 +16,6 @@ const orderSchema = new mongoose.Schema({
     ref: 'User',
     type: mongoose.Schema.ObjectId,
     required: [true, 'order must belong to user'],
-  },
-  promocode: {
-    ref: 'Discount',
-    type: mongoose.Schema.ObjectId,
   },
   productsDetails: [
     {
@@ -47,20 +41,13 @@ const orderSchema = new mongoose.Schema({
   paymentType: {
     type: String,
     enum: ['Cash On Delivery (COD)', 'Online Payment'],
-    required: true,
   },
 });
 
-orderSchema.pre('save', async function (next) {
+orderSchema.pre('save', function (next) {
   this.productsDetails.forEach((ele) => {
     this.total_amount += ele.price * ele.quantity;
   });
-  console.log(this.promocode);
-  console.log(this.total_amount);
-  if (this.promocode) {
-    const promo = await Discount.findOne({ _id: this.promocode });
-    this.total_amount -= this.total_amount * (promo.discountPercentage / 100);
-  }
   next();
 });
 

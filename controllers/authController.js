@@ -31,10 +31,8 @@ const cookiesAndTokens = (user, res, statusCode) => {
 };
 
 exports.signUp = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const newUser = await User.create({
-    Fname: req.body.Fname,
-    Lname: req.body.Lname,
+    name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     passwordValidate: req.body.passwordValidate,
