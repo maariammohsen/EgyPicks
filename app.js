@@ -57,7 +57,6 @@ app.use(express.json()); //building middleware function used to parse data
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp());
-console.log(path.join(__dirname, 'images'));
 app.use(cookie());
 ///routes
 app.use('/api/v1/products', productRouter);

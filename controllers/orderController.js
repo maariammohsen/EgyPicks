@@ -82,7 +82,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
 });
 
 const updateOrder = async (orderId) => {
-  const order = await order.findById(orderId);
+  const order = await Order.findById(orderId);
   await order.save();
 };
 
@@ -99,7 +99,6 @@ exports.webhookSession = (req, res, next) => {
   } catch (err) {
     res.status(400).send(`Webhook error : ${err.message}`);
   }
-  console.log(event);
   if (event.type === 'checkout.session.completed') {
     updateOrder(event.data.object.client_reference_id);
     res.status(200).json({ received: true });
