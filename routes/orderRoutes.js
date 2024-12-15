@@ -11,6 +11,11 @@ router
     orderController.getAllOrders
   )
   .post(authController.protect, orderController.createOrder);
+router.post(
+  '/checkout-session',
+  authController.protect,
+  orderController.createSession
+);
 router.get('/me', authController.protect, orderController.getUserOrders);
 router.get('/best-sellers', orderController.bestSeller);
 router

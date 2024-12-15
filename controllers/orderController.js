@@ -3,6 +3,103 @@ const catchAsync = require('../util/catchAsync');
 const appError = require('../util/appError');
 const Product = require('../models/productModel');
 const mongoose = require('mongoose');
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
+const cc = require('currency-converter-lt');
+
+exports.createSession = catchAsync(async (req, res, next) => {
+  //create order
+  let order = await Order.create({
+    productsDetails: req.body.productsDetails,
+    user: req.user._id,
+    status: 'pending payment',
+    paymentType: req.body.paymentType,
+  });
+
+  order = (await order.populate('productsDetails.product')).toObject();
+  const products = await Promise.all(
+    order.productsDetails.map(async (item) => {
+      const price = Math.round(
+        await new cc({
+          from: 'EGP',
+          to: 'AED',
+          amount: item.price,
+        }).convert()
+      );
+      return {
+        price_data: {
+          unit_amount: price * 100,
+          currency: 'aed',
+          product_data: {
+            name: item.product.name,
+            description: item.product.description,
+            images: [
+              `${req.protocol}://${req.get('host')}/images/product-pics/${
+                item.product.photo
+              }`,
+            ],
+          },
+        },
+        quantity: parseInt(item.quantity),
+      };
+    })
+  );
+  products.push({
+    price_data: {
+      unit_amount: 5 * 100,
+      currency: 'aed',
+      product_data: {
+        name: 'shipping',
+      },
+    },
+    quantity: 1,
+  });
+  products.push({
+    price_data: {
+      unit_amount:
+        (await new cc({
+          from: 'EGP',
+          to: 'AED',
+          amount: Math.round(order.total_amount * 0.02),
+        }).convert()) * 100,
+      currency: 'aed',
+      product_data: {
+        name: 'VAT 2%',
+      },
+    },
+    quantity: 1,
+  });
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    // success_url: `${req.protocol}://${req.get('host')}/?tour=${req.params.tourID}&user=${req.user.id}&price=${tour.price}`,
+    success_url: `${req.protocol}://${req.get('host')}/`,
+    cancel_url: `${req.protocol}://${req.get('host')}/`,
+    customer_email: req.user.email,
+    client_reference_id: order._id.toString(),
+    mode: 'payment',
+    line_items: products,
+  });
+  res.status(200).json({ status: 'success', data: { session } });
+});
+
+exports.webhookSession = catchAsync(async (req, res, next) => {
+  const signature = req.headers['stripe-signature'];
+  let event;
+  try {
+    event = stripe.webhooks.contructEvent(
+      req.body,
+      signature,
+      process.env.STRIPE_WEBHOOK
+    );
+  } catch (err) {
+    res.status(400).send(`Webhook error : ${err.message}`);
+  }
+  if (event.type === 'checkout.session.completed') {
+    const order = await order.findById(event.data.object.client_reference_id);
+    await order.save();
+    res.status(200).json({ received: true });
+  }
+});
+
 exports.createOrder = catchAsync(async (req, res, next) => {
   const order = await Order.create({
     user: req.user._id,

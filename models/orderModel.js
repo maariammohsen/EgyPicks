@@ -3,7 +3,7 @@ const Product = require('./productModel');
 const orderSchema = new mongoose.Schema({
   status: {
     type: String,
-    enum: ['shipped', 'delivered', 'received', 'refunded'],
+    enum: ['pending payment', 'shipped', 'delivered', 'received', 'refunded'],
     required: [true, 'order must have status'],
     default: 'received',
   },

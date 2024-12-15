@@ -11,6 +11,8 @@ const cors = require('cors');
 const appError = require('./util/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
+const orderController = require('./controllers/orderController');
+
 const userRouter = require('./routes/userRoutes');
 const productRouter = require('./routes/productRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -35,7 +37,11 @@ app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  orderController.webhookSession
+);
 // const limiter = rateLimit({
 //   max: 100,
 //   windowMS: 60 * 60 * 1000,
