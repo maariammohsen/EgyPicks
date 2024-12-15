@@ -25,13 +25,13 @@ app.enable('trust proxy');
 app.use(
   cors({
     origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: 'GET,HEAD,PUT,PATCH,OPTIONS,POST,DELETE',
     allowedHeaders: '*',
     credentials: true,
   })
 );
 
-app.options('*', cors());
+// app.options('*', cors());
 ///middlewares
 app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
