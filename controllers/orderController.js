@@ -84,6 +84,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
 const updateOrder = async (orderId) => {
   const order = await Order.findById(orderId);
   order.status = 'received';
+  console.log(order);
   await order.save();
 };
 
