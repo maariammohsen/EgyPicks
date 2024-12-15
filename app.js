@@ -7,7 +7,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cors = require('cors');
-
+const path = require('path');
+const fs = require('fs');
 const appError = require('./util/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -55,7 +56,7 @@ app.use(express.json()); //building middleware function used to parse data
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp());
-app.use(express.static(`${__dirname}/images`));
+app.use(express.static(path.join(__dirname, 'images')));
 app.use(cookie());
 ///routes
 app.use('/api/v1/products', productRouter);

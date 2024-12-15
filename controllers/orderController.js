@@ -81,7 +81,12 @@ exports.createSession = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: { session } });
 });
 
-exports.webhookSession = catchAsync(async (req, res, next) => {
+const updateOrder = async (orderId) => {
+  const order = await order.findById(orderId);
+  await order.save();
+};
+
+exports.webhookSession = (req, res, next) => {
   const signature = req.headers['stripe-signature'];
   let event;
   try {
@@ -94,11 +99,10 @@ exports.webhookSession = catchAsync(async (req, res, next) => {
     res.status(400).send(`Webhook error : ${err.message}`);
   }
   if (event.type === 'checkout.session.completed') {
-    const order = await order.findById(event.data.object.client_reference_id);
-    await order.save();
+    updateOrder(event.order.object.client_reference_id);
     res.status(200).json({ received: true });
   }
-});
+};
 
 exports.createOrder = catchAsync(async (req, res, next) => {
   const order = await Order.create({
