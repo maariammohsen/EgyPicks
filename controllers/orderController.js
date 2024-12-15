@@ -81,7 +81,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: { session } });
 });
 
-const updateOrder = async (orderId) => {
+const updateStatus = async (orderId) => {
   const order = await Order.findById(orderId);
   order.status = 'received';
   console.log(order);
@@ -101,9 +101,9 @@ exports.webhookSession = (req, res, next) => {
   } catch (err) {
     res.status(400).send(`Webhook error : ${err.message}`);
   }
-  if (event.type === 'checkout.session.completed') {
-    updateOrder(event.data.object.client_reference_id);
-  }
+
+  if (event.type === 'checkout.session.completed')
+    updateStatus(event.data.object.client_reference_id);
   res.status(200).json({ received: true });
 };
 
