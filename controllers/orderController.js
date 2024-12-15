@@ -33,7 +33,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
             name: item.product.name,
             description: item.product.description,
             images: [
-              `${req.protocol}://${req.get('host')}/images/product-pics/${
+              `${req.protocol}://${req.get('host')}/product-pics/${
                 item.product.photo
               }`,
             ],
@@ -88,9 +88,10 @@ const updateOrder = async (orderId) => {
 
 exports.webhookSession = (req, res, next) => {
   const signature = req.headers['stripe-signature'];
+
   let event;
   try {
-    event = stripe.webhooks.contructEvent(
+    event = stripe.webhooks.constructEvent(
       req.body,
       signature,
       process.env.STRIPE_WEBHOOK
