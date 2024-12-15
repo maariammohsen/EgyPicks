@@ -98,6 +98,7 @@ exports.webhookSession = (req, res, next) => {
   } catch (err) {
     res.status(400).send(`Webhook error : ${err.message}`);
   }
+  console.log(event);
   if (event.type === 'checkout.session.completed') {
     updateOrder(event.order.object.client_reference_id);
     res.status(200).json({ received: true });

@@ -40,6 +40,7 @@ app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+app.use(express.static(path.join(__dirname, 'images')));
 app.post(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
@@ -56,7 +57,7 @@ app.use(express.json()); //building middleware function used to parse data
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp());
-app.use(express.static(path.join(__dirname, 'images')));
+console.log(path.join(__dirname, 'images'));
 app.use(cookie());
 ///routes
 app.use('/api/v1/products', productRouter);
