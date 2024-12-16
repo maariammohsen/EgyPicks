@@ -40,9 +40,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
         await new cc({
           from: 'EGP',
           to: 'AED',
-          amount: !discount
-            ? item.price
-            : item.price - item.price * (discount.discountPercentage / 100),
+          amount: item.price,
         }).convert()
       );
       return {
@@ -63,33 +61,33 @@ exports.createSession = catchAsync(async (req, res, next) => {
       };
     })
   );
-  products.push({
-    price_data: {
-      unit_amount: 5 * 100,
-      currency: 'aed',
-      product_data: {
-        name: 'shipping',
-      },
-    },
-    quantity: 1,
-  });
-  products.push({
-    price_data: {
-      unit_amount:
-        Math.round(
-          await new cc({
-            from: 'EGP',
-            to: 'AED',
-            amount: order.total_amount * 0.02,
-          }).convert()
-        ) * 100,
-      currency: 'aed',
-      product_data: {
-        name: 'VAT 2%',
-      },
-    },
-    quantity: 1,
-  });
+  // products.push({
+  //   price_data: {
+  //     unit_amount: 5 * 100,
+  //     currency: 'aed',
+  //     product_data: {
+  //       name: 'shipping',
+  //     },
+  //   },
+  //   quantity: 1,
+  // });
+  // products.push({
+  //   price_data: {
+  //     unit_amount:
+  //       Math.round(
+  //         await new cc({
+  //           from: 'EGP',
+  //           to: 'AED',
+  //           amount: order.total_amount * 0.02,
+  //         }).convert()
+  //       ) * 100,
+  //     currency: 'aed',
+  //     product_data: {
+  //       name: 'VAT 2%',
+  //     },
+  //   },
+  //   quantity: 1,
+  // });
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     // success_url: `${req.protocol}://${req.get('host')}/?tour=${req.params.tourID}&user=${req.user.id}&price=${tour.price}`,
@@ -100,6 +98,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
     mode: 'payment',
     line_items: products,
     discounts: discount ? [{ coupon: discount.discountCode }] : undefined,
+    shipping_options: [{ shipping_rate: 'shr_1QWkNcFMOzFwL4TkLoUmFkW5' }],
   });
   res.status(200).json({ status: 'success', data: { session } });
 });

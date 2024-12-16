@@ -334,8 +334,8 @@ async function submitOrder(orderData) {
 
   try {
     const response = await fetch(
-      // 'https://egy-picks-nightstalker5699s-projects.vercel.app/api/v1/orders/checkout-session',
-      'http://127.0.0.1:3001/api/v1/orders/checkout-session',
+      'https://egy-picks-nightstalker5699s-projects.vercel.app/api/v1/orders/checkout-session',
+      // 'http://127.0.0.1:3001/api/v1/orders/checkout-session',
       {
         method: 'POST',
         headers: {
