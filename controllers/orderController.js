@@ -94,7 +94,7 @@ exports.webhookSession = async (req, res, next) => {
     order.status = 'received';
     await order.save({ validateBeforeSave: false });
 
-    const user = User.findById(order.user);
+    const user = await User.findById(order.user);
     user.usedPromo.push(order.appliedDiscount);
     await user.save({ validateBeforeSave: false });
   }
