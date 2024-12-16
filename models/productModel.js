@@ -40,15 +40,7 @@ const productSchema = new mongoose.Schema(
 
     title: String,
     slug: String,
-    // review: {
-    //   type: mongoose.schema.objectId,
-    //   ref: 'review',
-    // },
 
-    // order: {
-    //   type: mongoose.schema.objectId,
-    //   ref: 'order',
-    // },
     brandId: {
       type: mongoose.Schema.ObjectId,
       ref: 'Brand',
