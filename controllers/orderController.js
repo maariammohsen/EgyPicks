@@ -44,6 +44,8 @@ exports.createSession = catchAsync(async (req, res, next) => {
         }).convert()
       );
       return {
+        tax_rates: ['txr_1QWkOQFMOzFwL4Tk7U1mD6Tp'],
+        quantity: parseInt(item.quantity),
         price_data: {
           unit_amount: price * 100,
           currency: 'aed',
@@ -57,7 +59,6 @@ exports.createSession = catchAsync(async (req, res, next) => {
             ],
           },
         },
-        quantity: parseInt(item.quantity),
       };
     })
   );
