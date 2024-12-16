@@ -343,7 +343,7 @@ async function submitOrder(orderData) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          appliedDiscount: '675cc0fb110da8fec1ca68fc',
+          appliedDiscount: '676084cf589da63dcca9d844',
           paymentType: 'Online Payment',
           productsDetails: [
             {

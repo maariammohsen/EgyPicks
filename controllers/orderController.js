@@ -76,11 +76,13 @@ exports.createSession = catchAsync(async (req, res, next) => {
   products.push({
     price_data: {
       unit_amount:
-        (await new cc({
-          from: 'EGP',
-          to: 'AED',
-          amount: Math.round(order.total_amount * 0.02),
-        }).convert()) * 100,
+        Math.round(
+          await new cc({
+            from: 'EGP',
+            to: 'AED',
+            amount: order.total_amount * 0.02,
+          }).convert()
+        ) * 100,
       currency: 'aed',
       product_data: {
         name: 'VAT 2%',
@@ -97,6 +99,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
     client_reference_id: order._id.toString(),
     mode: 'payment',
     line_items: products,
+    discounts: discount ? [{ coupon: discount.discountCode }] : undefined,
   });
   res.status(200).json({ status: 'success', data: { session } });
 });
