@@ -62,33 +62,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
       };
     })
   );
-  // products.push({
-  //   price_data: {
-  //     unit_amount: 5 * 100,
-  //     currency: 'aed',
-  //     product_data: {
-  //       name: 'shipping',
-  //     },
-  //   },
-  //   quantity: 1,
-  // });
-  // products.push({
-  //   price_data: {
-  //     unit_amount:
-  //       Math.round(
-  //         await new cc({
-  //           from: 'EGP',
-  //           to: 'AED',
-  //           amount: order.total_amount * 0.02,
-  //         }).convert()
-  //       ) * 100,
-  //     currency: 'aed',
-  //     product_data: {
-  //       name: 'VAT 2%',
-  //     },
-  //   },
-  //   quantity: 1,
-  // });
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     // success_url: `${req.protocol}://${req.get('host')}/?tour=${req.params.tourID}&user=${req.user.id}&price=${tour.price}`,
