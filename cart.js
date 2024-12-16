@@ -334,7 +334,8 @@ async function submitOrder(orderData) {
 
   try {
     const response = await fetch(
-      'https://egy-picks-nightstalker5699s-projects.vercel.app/api/v1/orders/checkout-session',
+      // 'https://egy-picks-nightstalker5699s-projects.vercel.app/api/v1/orders/checkout-session',
+      'http://127.0.0.1:3001/api/v1/orders/checkout-session',
       {
         method: 'POST',
         headers: {
@@ -342,6 +343,7 @@ async function submitOrder(orderData) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          appliedDiscount: '675cc0fb110da8fec1ca68fc',
           paymentType: 'Online Payment',
           productsDetails: [
             {
@@ -387,7 +389,7 @@ async function submitOrder(orderData) {
     );
 
     if (!response.ok) {
-      throw new Error(`Server responded with ${response.status}`);
+      throw new Error(response.message);
     }
 
     const data = await response.json();
@@ -397,7 +399,7 @@ async function submitOrder(orderData) {
     // console.log('Order submitted successfully:', data);
     // alert('Your order has been submitted successfully!');
   } catch (error) {
-    console.error('Error submitting order:', error);
+    console.log('Error submitting order:', error.message);
     alert('Failed to submit your order. Please try again later.');
   }
 }

@@ -69,6 +69,11 @@ const user = new mongoose.Schema(
       type: String,
       required: [true, 'required! user must insert addresss!'],
     },
+    usedPromo: [
+      {
+        type: mongoose.Schema.ObjectId,
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },

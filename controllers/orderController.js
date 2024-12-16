@@ -9,19 +9,28 @@ const cc = require('currency-converter-lt');
 
 exports.createSession = catchAsync(async (req, res, next) => {
   //create order
+  let discount;
   if (req.body.appliedDiscount) {
-    const discount = Discount.findOne({
+    discount = await Discount.findOne({
       _id: req.body.appliedDiscount,
       validUntil: { $gte: Date.now() },
     });
     if (!discount)
       return next(new appError('there is no discount available', 400));
+    if (req.user.usedPromo.includes(req.body.appliedDiscount)) {
+      return next(new appError('you already used this discount', 400));
+    } else {
+      req.user.usedPromo.push(discount._id);
+      let user = req.user;
+      await user.save({ validateBeforeSave: false });
+    }
   }
   let order = await Order.create({
     productsDetails: req.body.productsDetails,
     user: req.user._id,
     status: 'pending payment',
     paymentType: req.body.paymentType,
+    appliedDiscount: req.body.appliedDiscount || undefined,
   });
 
   order = (await order.populate('productsDetails.product')).toObject();
@@ -31,7 +40,9 @@ exports.createSession = catchAsync(async (req, res, next) => {
         await new cc({
           from: 'EGP',
           to: 'AED',
-          amount: item.price,
+          amount: !discount
+            ? item.price
+            : item.price - item.price * (discount.discountPercentage / 100),
         }).convert()
       );
       return {
