@@ -335,7 +335,6 @@ async function submitOrder(orderData) {
   try {
     const response = await fetch(
       'https://egy-picks-nightstalker5699s-projects.vercel.app/api/v1/orders/checkout-session',
-      // 'http://127.0.0.1:3001/api/v1/orders/checkout-session',
       {
         method: 'POST',
         headers: {
@@ -349,36 +348,6 @@ async function submitOrder(orderData) {
             {
               product: '674cbb8ed71aef32733f128f',
               price: 230,
-              quantity: 2,
-              size: 'm,l',
-            },
-            {
-              product: '674cbc08d71aef32733f1293',
-              price: 395,
-              quantity: 1,
-              size: 'l',
-            },
-            {
-              product: '674cbd20d71aef32733f129d',
-              price: 200,
-              quantity: 2,
-              size: 'm',
-            },
-            {
-              product: '674ba5b98f23b79e70cbceed',
-              price: 655,
-              quantity: 1,
-              size: ' ',
-            },
-            {
-              product: '674ba6288f23b79e70cbcef1',
-              price: 625,
-              quantity: 2,
-              size: ' ',
-            },
-            {
-              product: '674cc692f7ea823bf1dcff4a',
-              price: 480,
               quantity: 2,
               size: 'm,l',
             },

@@ -4,7 +4,7 @@ const htmltotext = require('html-to-text');
 class Email {
   constructor(user, url) {
     this.to = user.email;
-    this.firstName = user.name;
+    this.firstName = user.Fname;
     this.url = url;
   }
 
@@ -36,10 +36,10 @@ class Email {
     });
     await this.send(html, subject);
   }
-  async resetMail(subject) {
+  async resetMail(code, subject) {
     const html = emailTemplates.resetEmailTemplate({
       firstName: this.firstName,
-      url: this.url,
+      code,
     });
     await this.send(html, subject);
   }

@@ -69,11 +69,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetToken = userman.createResetToken();
   await userman.save({ validateBeforeSave: false });
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/users/resetPassword/${resetToken}`;
   try {
-    await new email(userman, resetURL).resetMail('resetToken');
+    await new email(userman).resetMail(userman.resetToken, 'resetToken');
     res.status(200).json({
       status: 'success',
       message: 'Token sent to email!',
