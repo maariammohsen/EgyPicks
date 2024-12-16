@@ -4,7 +4,7 @@ const addressController = require('../controllers/addressController');
 const authController = require('../controllers/authController');
 
 router
-  .route('/Addresses')
+  .route('/')
   .get(authController.protect, addressController.getAllAddresses)
   .post(authController.protect, addressController.createAddress);
 
