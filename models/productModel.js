@@ -98,7 +98,7 @@ const productSchema = new mongoose.Schema(
 productSchema.virtual('orders', {
   ref: 'Order',
   localField: '_id',
-  foreignField: 'orderId',
+  foreignField: 'productsDetails.product',
 });
 
 productSchema.index({
@@ -108,7 +108,7 @@ productSchema.index({
 productSchema.virtual('reviews', {
   ref: 'Review',
   localField: '_id',
-  foreignField: 'reviewId',
+  foreignField: 'productId',
 });
 
 productSchema.pre('save', function (next) {
