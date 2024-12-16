@@ -3,6 +3,7 @@ const Discount = require('../models/discountModel');
 const catchAsync = require('../util/catchAsync');
 const appError = require('../util/appError');
 const Product = require('../models/productModel');
+const User = require('../models/userModel');
 const mongoose = require('mongoose');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const cc = require('currency-converter-lt');
@@ -19,10 +20,6 @@ exports.createSession = catchAsync(async (req, res, next) => {
       return next(new appError('there is no discount available', 400));
     if (req.user.usedPromo.includes(req.body.appliedDiscount)) {
       return next(new appError('you already used this discount', 400));
-    } else {
-      req.user.usedPromo.push(discount._id);
-      let user = req.user;
-      await user.save({ validateBeforeSave: false });
     }
   }
   let order = await Order.create({
@@ -96,6 +93,10 @@ exports.webhookSession = async (req, res, next) => {
     const order = await Order.findById(event.data.object.client_reference_id);
     order.status = 'received';
     await order.save({ validateBeforeSave: false });
+
+    const user = User.findById(order.user);
+    user.usedPromo.push(order.appliedDiscount);
+    await user.save({ validateBeforeSave: false });
   }
   res.status(200).json({ received: true });
 };
