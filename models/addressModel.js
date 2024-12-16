@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./userModel');
 const addressSchema = new mongoose.Schema({
   countryRegion: {
     type: String,
@@ -37,6 +38,10 @@ const addressSchema = new mongoose.Schema({
   },
   optionalMobileNumber: {
     type: String,
+  },
+  userID: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
   },
 });
 

@@ -79,7 +79,7 @@ const user = new mongoose.Schema(
 user.virtual('addresses', {
   ref: 'Address',
   localField: '_id',
-  foreignField: 'addressId',
+  foreignField: 'userID',
 });
 
 user.pre('find', async function (next) {
