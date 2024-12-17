@@ -18,9 +18,6 @@ const user = new mongoose.Schema(
         },
         message: 'username must contain letters & numbers and no white spaces',
       },
-
-      message:
-        "user's first name must contain letters & numbers and no white spaces",
     },
     Lname: {
       type: String,
