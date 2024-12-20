@@ -11,6 +11,18 @@ exports.getAllWishlists = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getMyWishlist = catchAsync(async (req, res, next) => {
+  const wishlist = await Wishlist.findOne({ userId: req.user._id })
+    .populate('products'); 
+  if (!wishlist) {
+    return next(new AppError('Wishlist not found!', 404));
+  }
+  res.status(200).json({
+    status: 'Success!',
+    data: wishlist,
+  });
+});
+
 exports.getWishlist = catchAsync(async (req, res, next) => {
   const wishlist = await Wishlist.findById(req.params.id);
   if (!wishlist) {
@@ -38,7 +50,7 @@ exports.updateWishlist = catchAsync(async (req, res, next) => {
 
   const wishlist = await Wishlist.findOne({ 
     _id: req.params.id, 
-    userId: req.user.id  
+    userId: req.user._id  
   });
 
   if (!wishlist) {

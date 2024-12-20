@@ -12,28 +12,9 @@ userId:{
 products:[{
         type: mongoose.Schema.ObjectId,
         ref: 'Product'
-     }]
+   
+      }]
 });
-
-wishlistSchema.virtual('productDetails',{
-    ref: 'Product',
-    localField: 'products',
-    foreignField:'_id'
-},
-
-    {
-      toJSON: { virtuals: true },
-      toObject: { virtuals: true },
-    }
-
-);
-
-wishlistSchema.pre('find', function(next) {
-    this.populate('products'); 
-    next();
-  }
-
-);
   
 const Wishlist = mongoose.model('Wishlist',wishlistSchema );
 module.exports =  Wishlist;
