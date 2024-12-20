@@ -47,6 +47,10 @@ const orderSchema = new mongoose.Schema({
     type: String,
     enum: ['Cash On Delivery (COD)', 'Online Payment'],
   },
+  shippingFees: {
+    type: Number,
+    default: 70,
+  },
 });
 
 orderSchema.pre('save', async function (next) {

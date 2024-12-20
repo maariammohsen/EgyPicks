@@ -22,6 +22,22 @@ exports.createSession = catchAsync(async (req, res, next) => {
       return next(new appError('you already used this discount', 400));
     }
   }
+  if (req.body.paymentType !== 'Online Payment') {
+    let order = await Order.create({
+      productsDetails: req.body.productsDetails,
+      user: req.user._id,
+      status: 'received',
+      paymentType: 'Cash On Delivery (COD)',
+      appliedDiscount: req.body.appliedDiscount || undefined,
+    });
+    let user = req.user;
+    user.usedPromo.push(order.appliedDiscount);
+    await user.save({ validateBeforeSave: false });
+    return res.status(200).json({
+      status: 'success',
+      data: { order },
+    });
+  }
   let order = await Order.create({
     productsDetails: req.body.productsDetails,
     user: req.user._id,

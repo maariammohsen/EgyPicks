@@ -83,6 +83,7 @@ exports.deleteDiscount = catchAsync(async (req, res, next) => {
   if (!ByeDisco) {
     return next(appError("OOPS!Can't find a discount with that id", 404));
   }
+  await stripe.coupons.del(ByeDisco.discountCode);
   res.status(204).json({
     status: 'success',
   });
