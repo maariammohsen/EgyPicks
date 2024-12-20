@@ -342,41 +342,12 @@ async function submitOrder(orderData) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          appliedDiscount: '676084cf589da63dcca9d844',
           paymentType: 'Online Payment',
           productsDetails: [
             {
               product: '674cbb8ed71aef32733f128f',
               price: 230,
-              quantity: 2,
-              size: 'm,l',
-            },
-            {
-              product: '674cbc08d71aef32733f1293',
-              price: 395,
-              quantity: 1,
-              size: 'l',
-            },
-            {
-              product: '674cbd20d71aef32733f129d',
-              price: 200,
-              quantity: 2,
-              size: 'm',
-            },
-            {
-              product: '674ba5b98f23b79e70cbceed',
-              price: 655,
-              quantity: 1,
-              size: ' ',
-            },
-            {
-              product: '674ba6288f23b79e70cbcef1',
-              price: 625,
-              quantity: 2,
-              size: ' ',
-            },
-            {
-              product: '674cc692f7ea823bf1dcff4a',
-              price: 480,
               quantity: 2,
               size: 'm,l',
             },
@@ -387,7 +358,7 @@ async function submitOrder(orderData) {
     );
 
     if (!response.ok) {
-      throw new Error(`Server responded with ${response.status}`);
+      throw new Error(response.message);
     }
 
     const data = await response.json();
@@ -397,7 +368,7 @@ async function submitOrder(orderData) {
     // console.log('Order submitted successfully:', data);
     // alert('Your order has been submitted successfully!');
   } catch (error) {
-    console.error('Error submitting order:', error);
+    console.log('Error submitting order:', error.message);
     alert('Failed to submit your order. Please try again later.');
   }
 }

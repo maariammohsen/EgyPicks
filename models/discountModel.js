@@ -12,11 +12,6 @@ const discountSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'Promo Code must have an expiration date!'],
   },
-  order: {
-    ref: 'Order',
-    type: mongoose.Schema.ObjectId,
-    required: [true, 'Discount must belong to an order'],
-  },
 });
 
 const discountModel = mongoose.model('Discount', discountSchema);

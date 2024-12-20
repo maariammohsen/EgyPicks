@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Product = require('./productModel');
+const Discount = require('./discountModel');
 const orderSchema = new mongoose.Schema({
   status: {
     type: String,
@@ -48,11 +49,15 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
-orderSchema.pre('save', function (next) {
+orderSchema.pre('save', async function (next) {
   if (this.total_amount === 0)
     this.productsDetails.forEach((ele) => {
       this.total_amount += ele.price * ele.quantity;
     });
+  if (this.appliedDiscount) {
+    const promo = await Discount.findOne({ _id: this.appliedDiscount });
+    this.total_amount -= this.total_amount * (promo.discountPercentage / 100);
+  }
   next();
 });
 

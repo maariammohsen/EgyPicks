@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const Review = require('./reviewModel');
+const Order = require('./orderModel');
 
 const productSchema = new mongoose.Schema(
   {
@@ -40,15 +42,7 @@ const productSchema = new mongoose.Schema(
 
     title: String,
     slug: String,
-    // review: {
-    //   type: mongoose.schema.objectId,
-    //   ref: 'review',
-    // },
 
-    // order: {
-    //   type: mongoose.schema.objectId,
-    //   ref: 'order',
-    // },
     brandId: {
       type: mongoose.Schema.ObjectId,
       ref: 'Brand',
@@ -101,10 +95,16 @@ const productSchema = new mongoose.Schema(
 
   { timestamps: true } //created at
 );
+productSchema.virtual('orders', {
+  ref: 'Order',
+  localField: '_id',
+  foreignField: 'productsDetails.product',
+});
 
 productSchema.index({
   price: 1,
 });
+
 productSchema.virtual('reviews', {
   ref: 'Review',
   localField: '_id',

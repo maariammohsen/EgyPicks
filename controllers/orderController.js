@@ -3,25 +3,31 @@ const Discount = require('../models/discountModel');
 const catchAsync = require('../util/catchAsync');
 const appError = require('../util/appError');
 const Product = require('../models/productModel');
+const User = require('../models/userModel');
 const mongoose = require('mongoose');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const cc = require('currency-converter-lt');
 
 exports.createSession = catchAsync(async (req, res, next) => {
   //create order
+  let discount;
   if (req.body.appliedDiscount) {
-    const discount = Discount.findOne({
+    discount = await Discount.findOne({
       _id: req.body.appliedDiscount,
       validUntil: { $gte: Date.now() },
     });
     if (!discount)
       return next(new appError('there is no discount available', 400));
+    if (req.user.usedPromo.includes(req.body.appliedDiscount)) {
+      return next(new appError('you already used this discount', 400));
+    }
   }
   let order = await Order.create({
     productsDetails: req.body.productsDetails,
     user: req.user._id,
     status: 'pending payment',
     paymentType: req.body.paymentType,
+    appliedDiscount: req.body.appliedDiscount || undefined,
   });
 
   order = (await order.populate('productsDetails.product')).toObject();
@@ -35,6 +41,8 @@ exports.createSession = catchAsync(async (req, res, next) => {
         }).convert()
       );
       return {
+        tax_rates: ['txr_1QWkOQFMOzFwL4Tk7U1mD6Tp'],
+        quantity: parseInt(item.quantity),
         price_data: {
           unit_amount: price * 100,
           currency: 'aed',
@@ -48,35 +56,10 @@ exports.createSession = catchAsync(async (req, res, next) => {
             ],
           },
         },
-        quantity: parseInt(item.quantity),
       };
     })
   );
-  products.push({
-    price_data: {
-      unit_amount: 5 * 100,
-      currency: 'aed',
-      product_data: {
-        name: 'shipping',
-      },
-    },
-    quantity: 1,
-  });
-  products.push({
-    price_data: {
-      unit_amount:
-        (await new cc({
-          from: 'EGP',
-          to: 'AED',
-          amount: Math.round(order.total_amount * 0.02),
-        }).convert()) * 100,
-      currency: 'aed',
-      product_data: {
-        name: 'VAT 2%',
-      },
-    },
-    quantity: 1,
-  });
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     // success_url: `${req.protocol}://${req.get('host')}/?tour=${req.params.tourID}&user=${req.user.id}&price=${tour.price}`,
@@ -86,6 +69,8 @@ exports.createSession = catchAsync(async (req, res, next) => {
     client_reference_id: order._id.toString(),
     mode: 'payment',
     line_items: products,
+    discounts: discount ? [{ coupon: discount.discountCode }] : undefined,
+    shipping_options: [{ shipping_rate: 'shr_1QWkNcFMOzFwL4TkLoUmFkW5' }],
   });
   res.status(200).json({ status: 'success', data: { session } });
 });
@@ -108,6 +93,10 @@ exports.webhookSession = async (req, res, next) => {
     const order = await Order.findById(event.data.object.client_reference_id);
     order.status = 'received';
     await order.save({ validateBeforeSave: false });
+
+    const user = await User.findById(order.user);
+    user.usedPromo.push(order.appliedDiscount);
+    await user.save({ validateBeforeSave: false });
   }
   res.status(200).json({ received: true });
 };

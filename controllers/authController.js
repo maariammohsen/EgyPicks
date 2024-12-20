@@ -32,7 +32,8 @@ const cookiesAndTokens = (user, res, statusCode) => {
 
 exports.signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
-    name: req.body.name,
+    Fname: req.body.Fname,
+    Lname: req.body.Lname,
     email: req.body.email,
     password: req.body.password,
     passwordValidate: req.body.passwordValidate,
@@ -69,11 +70,8 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   const resetToken = userman.createResetToken();
   await userman.save({ validateBeforeSave: false });
-  const resetURL = `${req.protocol}://${req.get(
-    'host'
-  )}/api/users/resetPassword/${resetToken}`;
   try {
-    await new email(userman, resetURL).resetMail('resetToken');
+    await new email(userman).resetMail(userman.resetToken, 'resetToken');
     res.status(200).json({
       status: 'success',
       message: 'Token sent to email!',

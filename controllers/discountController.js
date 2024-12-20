@@ -2,7 +2,7 @@ const appError = require('../util/appError');
 const Discount = require('../models/discountModel');
 const catchAsync = require('../util/catchAsync');
 const userModel = require('../models/userModel');
-
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
 exports.promocode = catchAsync(async (req, res, next) => {
   const promo = await Discount.findOne({
     discountCode: req.body.discountCode,
@@ -31,6 +31,12 @@ exports.promocode = catchAsync(async (req, res, next) => {
 });
 exports.createDiscount = catchAsync(async (req, res, next) => {
   const newDiscount = await Discount.create(req.body);
+  const coupon = await stripe.coupons.create({
+    name: newDiscount.discountCode,
+    id: newDiscount.discountCode,
+    percent_off: newDiscount.discountPercentage,
+    duration: 'once',
+  });
   res.status(201).json({
     status: 'success',
     data: { newDiscount },
