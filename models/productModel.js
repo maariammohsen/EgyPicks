@@ -3,6 +3,9 @@ const slugify = require('slugify');
 const Review = require('./reviewModel');
 const Order = require('./orderModel');
 
+const customValidate = function () {
+  return this.isCustomized;
+};
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -90,6 +93,33 @@ const productSchema = new mongoose.Schema(
     quantityRating: Number,
     description: {
       type: String,
+    },
+    isCustomized: {
+      type: Boolean,
+    },
+    color: {
+      type: String,
+      enum: ['Black', 'White', 'Burgundy', 'Navy Blue', 'Light Beige'],
+      validate: { validator: customValidate },
+    },
+    text: {
+      type: String,
+      validate: { validator: customValidate },
+    },
+    customProductImage: {
+      type: String,
+      validate: { validator: customValidate },
+    },
+    font: {
+      type: String,
+      enum: [
+        'Roboto',
+        'Lobster',
+        'Montserrat',
+        'Merriweather',
+        'Dancing Script',
+      ],
+      validate: { validator: customValidate },
     },
   },
 

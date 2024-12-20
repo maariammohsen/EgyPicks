@@ -9,7 +9,7 @@ router
   .post(authController.restrictTo('admin'), discountController.createDiscount);
 
 router
-  .route('/id')
+  .route('/:id')
   .get(discountController.getDiscount)
   .patch(authController.restrictTo('admin'), discountController.updateDiscount)
   .delete(

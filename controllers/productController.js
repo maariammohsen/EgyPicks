@@ -47,8 +47,6 @@ exports.getProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-//CREATE
-
 exports.createProduct = catchAsync(async (req, res, next) => {
   const newProduct = await Product.create(req.body);
 
@@ -60,7 +58,16 @@ exports.createProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-//UPDATE
+exports.createCustomizedPorduct = catchAsync(async (req, res, next) => {
+  const newCustomProduct = await Product.create(req.body);
+  res.status(201).json({
+    status: 'success',
+    data: {
+      product: newCustomProduct,
+    },
+  });
+});
+
 exports.updateProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -79,7 +86,6 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-//DELETE
 exports.deleteProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findByIdAndDelete(req.params.id);
 
@@ -121,6 +127,18 @@ exports.getProductStats = catchAsync(async (req, res) => {
       stats,
     },
   });
+});
+exports.uploadCustomize = upload.single('customProductImage');
+exports.resizeCustom = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+  const slugName = slugify(req.body.name);
+  await sharp(req.file.buffer)
+    .resize(200, 200)
+    .toFormat('jpeg')
+    .toFile(`images/product-pics/${slugName}.jpeg`);
+
+  req.body.customProductImage = `${slugName}.jpeg`;
+  next();
 });
 
 exports.uploads = upload.single('photo');

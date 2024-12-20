@@ -43,6 +43,11 @@ const orderSchema = new mongoose.Schema({
       },
     },
   ],
+  orderAddress: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'Address',
+    required: [true, 'Order must have an address'],
+  },
   paymentType: {
     type: String,
     enum: ['Cash On Delivery (COD)', 'Online Payment'],

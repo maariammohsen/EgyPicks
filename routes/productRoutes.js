@@ -13,8 +13,6 @@ router
     productController.createProduct
   );
 
-router.route('/product-stats').get(productController.getProductStats);
-
 router
   .route('/:id')
   .get(productController.getProduct)
@@ -24,5 +22,11 @@ router
     authController.restrictTo('admin'),
     productController.deleteProduct
   );
+
+router.post(
+  '/custom-products',
+  authController.protect,
+  productController.createCustomizedPorduct
+);
 
 module.exports = router;
