@@ -4,7 +4,7 @@ const User = require('../models/userModel');
 const catchAsync = require('../util/catchAsync');
 const email = require('../util/email');
 const appError = require('../util/appError');
-
+const Address = require('../models/addressModel.js');
 const signedToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN, //options
@@ -37,11 +37,10 @@ exports.signUp = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordValidate: req.body.passwordValidate,
-    address: req.body.address,
     phoneNumber: req.body.phoneNumber,
     birthDate: req.body.birthDate,
   });
-
+  const address = await Address.create(req.body.address);
   await new email(newUser).welcomeMail('welcome to EgyPicks!');
 
   cookiesAndTokens(newUser, res, 201);
