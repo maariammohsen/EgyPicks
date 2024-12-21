@@ -22,6 +22,11 @@ exports.createSession = catchAsync(async (req, res, next) => {
       return next(new appError('you already used this discount', 400));
     }
   }
+  for (item of req.body.productsDetails) {
+    const product = await Product.findById(item.product);
+    if (product.quantity < item.quantity)
+      return next(new appError(`${product.name} is out of stock`), 400);
+  }
   if (req.body.paymentType !== 'Online Payment') {
     let order = await Order.create({
       productsDetails: req.body.productsDetails,
