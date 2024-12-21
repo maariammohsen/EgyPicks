@@ -49,7 +49,6 @@ const productSchema = new mongoose.Schema(
     brandId: {
       type: mongoose.Schema.ObjectId,
       ref: 'Brand',
-      required: true,
     },
     gender: {
       type: String,

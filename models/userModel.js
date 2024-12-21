@@ -107,7 +107,7 @@ user.virtual('addresses', {
 });
 
 user.pre('find', async function (next) {
-  this.populate('Addresses');
+  this.populate('addresses');
   next();
 });
 user.pre('save', async function (next) {
