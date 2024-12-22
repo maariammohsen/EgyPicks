@@ -10,6 +10,7 @@ const cc = require('currency-converter-lt');
 
 exports.createSession = catchAsync(async (req, res, next) => {
   //create order
+  console.log(req.body);
   let discount;
   if (req.body.appliedDiscount) {
     discount = await Discount.findOne({
