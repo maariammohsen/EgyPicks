@@ -111,6 +111,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     resetTokenTimer: { $gte: Date.now() },
   });
   if (!userfresh) return next(new appError('invalid', 400));
+
   userfresh.password = req.body.password;
   userfresh.passwordValidate = req.body.passwordValidate;
   userfresh.resetToken = undefined;
