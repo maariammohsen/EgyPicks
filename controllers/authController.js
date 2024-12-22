@@ -98,16 +98,18 @@ exports.verifyCode = catchAsync(async (req, res, next) => {
   // res.cookie('verifed', `${userfresh.resetToken}|${userfresh.email}`);
   res.status(200).json({
     status: 'success',
+    token: req.params.token,
   });
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
-  if (!req.cookies.verifed)
-    return next(new appError("you can't access this route"), 403);
-  const data = req.cookies.verifed.split('|');
+  // if (!req.cookies.verifed)
+  //   return next(new appError("you can't access this route"), 403);
+  // const data = req.cookies.verifed.split('|');
+  const { email, resetToken } = req.body;
   const userfresh = await User.findOne({
-    email: data[1],
-    resetToken: data[0],
+    email,
+    resetToken,
     resetTokenTimer: { $gte: Date.now() },
   });
   if (!userfresh) return next(new appError('invalid', 400));
