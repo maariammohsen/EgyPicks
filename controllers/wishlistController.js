@@ -12,8 +12,9 @@ exports.getAllWishlists = catchAsync(async (req, res, next) => {
 });
 
 exports.getMyWishlist = catchAsync(async (req, res, next) => {
-  const wishlist = await Wishlist.findOne({ userId: req.user._id })
-    .populate('products'); 
+  const wishlist = await Wishlist.findOne({ userId: req.user._id }).populate(
+    'products'
+  );
   if (!wishlist) {
     return next(new AppError('Wishlist not found!', 404));
   }
@@ -34,7 +35,7 @@ exports.getWishlist = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createWishlist= catchAsync(async (req, res, next) => {
+exports.createWishlist = catchAsync(async (req, res, next) => {
   const newWishlist = await Wishlist.create(req.body);
 
   res.status(201).json({
@@ -46,26 +47,30 @@ exports.createWishlist= catchAsync(async (req, res, next) => {
 });
 
 exports.updateWishlist = catchAsync(async (req, res, next) => {
-  const { action, productId } = req.body; 
+  const { action, productId } = req.body;
 
-  const wishlist = await Wishlist.findOne({ 
-    _id: req.params.id, 
-    userId: req.user._id  
+  let wishlist = await Wishlist.findOne({
+    _id: req.params.id,
+    userId: req.user._id,
   });
 
   if (!wishlist) {
-    return next(new AppError('No wishlist found for this user with that id', 404));
+    return next(
+      new AppError('No wishlist found for this user with that id', 404)
+    );
   }
 
   if (action === 'add') {
-    // Prevent adding duplicates 
+    // Prevent adding duplicates
     if (!wishlist.products.includes(productId)) {
-      wishlist.products.push(productId); 
+      wishlist.products.push(productId);
     } else {
       return next(new AppError('Product is already in the wishlist', 400));
     }
   } else if (action === 'remove') {
-    wishlist.products.pull(productId);
+    wishlist.products = wishlist.products.filter(
+      (product) => productId.toString() !== product.toString()
+    );
   } else {
     return next(new AppError('Invalid action. Use "add" or "remove".', 400));
   }
@@ -78,7 +83,6 @@ exports.updateWishlist = catchAsync(async (req, res, next) => {
     },
   });
 });
-
 
 exports.deleteWishlist = catchAsync(async (req, res, next) => {
   const wishlist = await Wishlist.findByIdAndDelete(req.params.id);
