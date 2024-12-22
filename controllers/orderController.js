@@ -34,6 +34,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
       status: 'received',
       paymentType: 'Cash On Delivery (COD)',
       appliedDiscount: req.body.appliedDiscount || undefined,
+      orderAddress: req.body.orderAddress,
     });
     let user = req.user;
     user.usedPromo.push(order.appliedDiscount);
