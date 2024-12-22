@@ -342,14 +342,27 @@ async function submitOrder(orderData) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          appliedDiscount: '676084cf589da63dcca9d844',
+          appliedDiscount: '67657eef27760c468fcc9b98',
           paymentType: 'Online Payment',
+          orderAddress: '675f3882434814227a83cf8b',
           productsDetails: [
             {
               product: '674cbb8ed71aef32733f128f',
               price: 230,
               quantity: 2,
               size: 'm,l',
+            },
+            {
+              product: '674cbd20d71aef32733f129d',
+              price: 200,
+              quantity: 2,
+              size: 'm',
+            },
+            {
+              product: '674ba5b98f23b79e70cbceed',
+              price: 655,
+              quantity: 1,
+              size: ' ',
             },
           ],
         }),
