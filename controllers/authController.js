@@ -42,7 +42,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
   });
   const address = await Address.create(req.body.address);
   await new email(newUser).welcomeMail('welcome to EgyPicks!');
-
+  await newUser.populate('addresses');
   cookiesAndTokens(newUser, res, 201);
 });
 
