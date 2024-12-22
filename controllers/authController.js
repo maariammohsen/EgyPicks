@@ -5,6 +5,7 @@ const catchAsync = require('../util/catchAsync');
 const email = require('../util/email');
 const appError = require('../util/appError');
 const Address = require('../models/addressModel.js');
+const Wishlist = require('../models/wishlistModel.js');
 const signedToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN, //options
@@ -47,6 +48,9 @@ exports.signUp = catchAsync(async (req, res, next) => {
     streetAddress: req.body.streetAddress,
     optionalMobileNumber: req.body.optionalMobileNumber,
     userID: newUser._id,
+  });
+  const wishlist = await Wishlist.create({
+    userId: newUser._id,
   });
   await new email(newUser).welcomeMail('welcome to EgyPicks!');
   await newUser.populate('addresses');
