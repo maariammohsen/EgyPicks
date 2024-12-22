@@ -50,6 +50,7 @@ exports.createSession = catchAsync(async (req, res, next) => {
     status: 'pending payment',
     paymentType: req.body.paymentType,
     appliedDiscount: req.body.appliedDiscount || undefined,
+    orderAddress: req.body.orderAddress,
   });
 
   order = (await order.populate('productsDetails.product')).toObject();
