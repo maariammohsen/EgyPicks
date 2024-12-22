@@ -107,7 +107,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   //   return next(new appError("you can't access this route"), 403);
   // const data = req.cookies.verifed.split('|');
   const { email, resetToken } = req.body;
-  console.log(req.body);
   const userfresh = await User.findOne({
     email,
     resetToken,
