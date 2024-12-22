@@ -40,7 +40,14 @@ exports.signUp = catchAsync(async (req, res, next) => {
     phoneNumber: req.body.phoneNumber,
     birthDate: req.body.birthDate,
   });
-  const address = await Address.create(req.body.address);
+  const address = await Address.create({
+    countryRegion: req.body.countryRegion,
+    governorate: req.body.governorate,
+    Town: req.body.Town,
+    streetAddress: req.body.streetAddress,
+    optionalMobileNumber: req.body.optionalMobileNumber,
+    userID: newUser._id,
+  });
   await new email(newUser).welcomeMail('welcome to EgyPicks!');
   await newUser.populate('addresses');
   cookiesAndTokens(newUser, res, 201);
