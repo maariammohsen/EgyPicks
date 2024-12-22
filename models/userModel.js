@@ -81,6 +81,7 @@ const user = new mongoose.Schema(
       required: [true, 'required! user must insert a strong password'],
       select: false, //hidden output
     },
+
     resetToken: String,
     resetTokenTimer: Date,
     passwordChangedAt: Date,
