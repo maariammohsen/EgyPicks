@@ -102,7 +102,7 @@ exports.verifyCode = catchAsync(async (req, res, next) => {
   });
   if (!userfresh) return next(new appError('invalid token', 400));
 
-  // res.cookie('verifed', `${userfresh.resetToken}|${userfresh.email}`);
+  res.cookie('verifed', `${userfresh.resetToken}|${userfresh.email}`);
   res.status(200).json({
     status: 'success',
     token: req.params.token,

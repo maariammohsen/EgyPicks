@@ -98,36 +98,6 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getProductStats = catchAsync(async (req, res) => {
-  const stats = await Product.aggregate([
-    { $match: { Sales: { $gte: 5 } } },
-    {
-      $group: {
-        _id: '$category',
-        numProducts: { $sum: 1 },
-        numSales: { $sum: '$Sales' },
-        avgSales: { $avg: '$Sales' },
-        avgPrice: { $avg: '$Price' },
-        minPrice: { $min: '$Price' },
-        maxPrice: { $max: '$Price' },
-      },
-    },
-    {
-      $sort: { avgPrice: 1 }, //1 asc , -1 desc
-    },
-    // {
-    //   $match: {
-    //     _id: { $ne: 'Beauty' }, //not equal
-    //   },
-    // },
-  ]);
-  res.status(200).json({
-    status: 'success',
-    data: {
-      stats,
-    },
-  });
-});
 exports.uploadCustomize = upload.single('customProductImage');
 exports.resizeCustom = catchAsync(async (req, res, next) => {
   if (!req.file) return next();

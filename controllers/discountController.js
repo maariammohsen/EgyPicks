@@ -60,24 +60,6 @@ exports.getDiscount = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateDiscount = catchAsync(async (req, res, next) => {
-  const ahlaDiscountLmyuser = await Discount.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  if (!ahlaDiscountLmyuser) {
-    return next(appError("OOPS!Can't find a discount with that id", 404));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: { ahlaDiscountLmyuser },
-  });
-});
-
 exports.deleteDiscount = catchAsync(async (req, res, next) => {
   const ByeDisco = await Discount.findByIdAndDelete(req.params.id);
   if (!ByeDisco) {

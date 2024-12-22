@@ -11,7 +11,6 @@ router
 router
   .route('/:id')
   .get(discountController.getDiscount)
-  .patch(authController.restrictTo('admin'), discountController.updateDiscount)
   .delete(
     authController.restrictTo('admin'),
     discountController.deleteDiscount
