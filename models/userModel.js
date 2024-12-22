@@ -85,10 +85,6 @@ const user = new mongoose.Schema(
     resetToken: String,
     resetTokenTimer: Date,
     passwordChangedAt: Date,
-    address: {
-      type: String,
-      required: [true, 'required! user must insert addresss!'],
-    },
     usedPromo: [
       {
         type: mongoose.Schema.ObjectId,
